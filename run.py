@@ -1,6 +1,6 @@
 from tabulate import tabulate   # needs pip install tablulate
 import os  # import operating system routines
-import src.gui as gui
+# import src.gui as gui
 from src.api import RequestInfo, RequestParameters
 from src.config import Configuration as conf
 
@@ -179,7 +179,8 @@ class UserInterface:
             self.startGUI()
 
     def startGUI(self):
-        gui.MainFrame()
+        pass
+        # gui.MainFrame()
 
     # Set the preferred temperature unit
     # User can choose between Fahrenheit and Celcius
