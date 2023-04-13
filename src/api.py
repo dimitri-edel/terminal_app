@@ -108,7 +108,7 @@ class RequestInfo:
         date_as_str = ""
         data_weekday = self.getWeekdayName(date_obj)
         date_as_str = data_weekday + " " + str(data_day) + "."\
-            + self.getMonthName(data_month)
+            + self.getMonthName(data_month-1)
 
         return date_as_str
 
