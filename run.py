@@ -158,7 +158,7 @@ class UserInterface:
 
     def getUserInput(self):
         self.printSwitchBoard()
-        _input = input("Enter command: ")
+        _input = input("Enter command: \n")
         if _input.lower() == "exit":
             self.EXIT = True
         elif _input.lower() == "today":
