@@ -124,9 +124,7 @@ class UserInterface:
         table.append([])
         table[0] = ["CURRENT DATE: ", "CURRENT TEMPERATURE: "]
         table.append([])
-        table[1] = [curr_date, curr_temp]
-        # clear the screen before showing the data
-        self.clearScreen()
+        table[1] = [curr_date, curr_temp]        
         print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
 
     """Print the forecast for the current day """
@@ -139,9 +137,7 @@ class UserInterface:
             res = info.getRespoonse(self.TEMPERATURE_UNIT)
         except Exception as e:
             print(e)
-            return
-        # clear the screen beofore printing the forecast
-        self.clearScreen()
+            return        
         t = TextTable(1)
         t.printForcast(response_info=res)
 
@@ -158,7 +154,7 @@ class UserInterface:
         except Exception as e:
             print(e)
             return
-            
+
         for index in range(len(res.response_table)):
             # assemple the headers of the table
             tables.append([])
@@ -173,9 +169,7 @@ class UserInterface:
                 hour += 1
             # next teble
             table_index += 1
-
-        # clear the screen beofore printing the forecast
-        self.clearScreen()
+       
         # test the table class
         t = TextTable(7)
         t.printForcast(response_info=res)
@@ -200,19 +194,28 @@ class UserInterface:
         if _input.lower() == "exit":
             self.EXIT = True
         elif _input.lower() == "today":
+            self.clearScreen()
             self.printTodaysForecast()
         elif _input.lower() == "forecast":
+            self.clearScreen()
             self.printForecast(self.FORECAST_SPAN)
         elif _input.lower() == "current":
+            self.clearScreen()
             self.showCurrentTemperature()
         elif _input.lower() == "get settings":
+            self.clearScreen()
             self.getSettings()
         elif _input.lower() == "set tu":
+            self.clearScreen()
             self.setTemperatureUnit()
         elif _input.lower() == "set fs":
+            self.clearScreen()
             self.setForecastSpan()
         elif _input.lower() == "city":
+            self.clearScreen()
             self.setNameOfCity()
+        else:
+            print(f"The command '{_input}' is not defined!")
     
 
     # Set the preferred temperature unit
