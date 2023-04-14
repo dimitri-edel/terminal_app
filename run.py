@@ -96,7 +96,7 @@ class UserInterface:
         self.FORECAST_SPAN = 7
         # Which temperature unit should be displayed
         self.TEMPERATURE_UNIT = "f"
-        self.NAME_OF_CITY = "Berlin"
+        self.NAME_OF_CITY = "Austin"
 
     # Show the current temperature
 
@@ -104,7 +104,7 @@ class UserInterface:
         # Table that holds the data to be printed
         table = []
         # Parameters for the RequestInfo constructor
-        parameters = RequestParameters(number_of_days=1, city="Berlin")
+        parameters = RequestParameters(number_of_days=1, city=self.NAME_OF_CITY)
         # Create an instance of RequestInfo, which will in turn
         # send a request to the online API
         info = RequestInfo(parameters=parameters)
@@ -180,7 +180,7 @@ class UserInterface:
 
     def getUserInput(self):
         self.printSwitchBoard()
-        _input = input("Enter command: \n")
+        _input = input("Enter command:")
         if _input.lower() == "exit":
             self.EXIT = True
         elif _input.lower() == "today":
@@ -195,12 +195,9 @@ class UserInterface:
             self.setTemperatureUnit()
         elif _input.lower() == "set fs":
             self.setForecastSpan()
-        elif _input.lower() == "update":
-            self.updateSettings()        
-
-    def startGUI(self):
-        pass
-        # gui.MainFrame()
+        elif _input.lower() == "city":
+            self.setNameOfCity()
+    
 
     # Set the preferred temperature unit
     # User can choose between Fahrenheit and Celcius
@@ -231,16 +228,16 @@ class UserInterface:
         else:
             print("Number of days must be a number!")
 
+    def setNameOfCity(self):
+        city = input("Enter name of city:")
+        self.NAME_OF_CITY = city.capitalize()
+        self.updateSettings()
+        print(f"Name of city set to {city.capitalize()}")
+
     def updateSettings(self):
         conf().updateSettings(
-            temp_unit=self.TEMPERATURE_UNIT, forecast_span=self.FORECAST_SPAN
+            temp_unit=self.TEMPERATURE_UNIT, forecast_span=self.FORECAST_SPAN, name_of_city=self.NAME_OF_CITY
         )
-        # file_content = "tu=" + self.TEMPERATURE_UNIT + \
-        #     " " + "days=" + str(self.FORECAST_SPAN)
-        # path = os.path.normcase("./conf/settings.sf")
-        # f = open(path, "w")
-        # f.write(file_content)
-        # f.close()
         print("Settings have been updated!")
 
     # Read settings from the file
@@ -248,18 +245,7 @@ class UserInterface:
         data = conf().getSettings()
         self.TEMPERATURE_UNIT = data["temperature_unit"]
         self.FORECAST_SPAN = data["forecast_span"]
-        # try:
-        #     path = os.path.normcase("./conf/settings.sf")
-        #     f = open(path, "r")
-        #     file_content = f.read()
-        #     split_content = file_content.split(" ")
-        #     tu = split_content[0].split("=")
-        #     days = split_content[1].split("=")
-        #     self.TEMPERATURE_UNIT = tu[1]
-        #     self.FORECAST_SPAN = int(days[1])
-        # except FileNotFoundError:
-        #     # Create settings-file using default values
-        #     self.updateSettings()
+        self.NAME_OF_CITY = data["name_of_city"]
 
     def printSwitchBoard(self):
         swtich_board = []
@@ -280,9 +266,11 @@ class UserInterface:
         swtich_board[5] = [
             "Set the span of a forecast. How many days to cover? Maximum is 7!",
             "set fs",
-        ]        
+        ]   
         swtich_board.append([])
-        swtich_board[6] = ["Exit", "exit"]
+        swtich_board[6] = ["Set name of the city for for which you want the forecast to be.\nIf not set, the setting defaults to 'Austin, TX, USA'.", "city"]     
+        swtich_board.append([])
+        swtich_board[7] = ["Exit", "exit"]
         print(tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
 
     def clearScreen(self):
