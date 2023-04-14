@@ -44,6 +44,11 @@ class RequestInfo:
         response = ResponseInfo()
         x = requests.get(self.CURL)
         json_obj = x.json()
+        # If the response returns an error, then raise an exception
+        if "error" in json_obj:
+            additional_text = "You might have misspelled the name of the city, or the city is not covered!"            
+            raise Exception(json_obj["error"]["message"] + additional_text)
+
         if temperature_unit == 'f':
             current_temperature = json_obj['current']['temp_f']
         else:

@@ -109,7 +109,12 @@ class UserInterface:
         # send a request to the online API
         info = RequestInfo(parameters=parameters)
         # Extract the response, received from the API
-        res = info.getRespoonse(self.TEMPERATURE_UNIT)
+        try:
+            res = info.getRespoonse(self.TEMPERATURE_UNIT)
+        except Exception as e:
+            print(e)
+            return
+
         curr_temp = str(res.response_table[0]["current_temperature"])
         if self.TEMPERATURE_UNIT == "f":
             curr_temp = str(curr_temp) + " F"
@@ -129,7 +134,12 @@ class UserInterface:
     def printTodaysForecast(self):
         parameters = RequestParameters(number_of_days=1, city=self.NAME_OF_CITY)
         info = RequestInfo(parameters=parameters)
-        res = info.getRespoonse(self.TEMPERATURE_UNIT)
+        
+        try:
+            res = info.getRespoonse(self.TEMPERATURE_UNIT)
+        except Exception as e:
+            print(e)
+            return
         # clear the screen beofore printing the forecast
         self.clearScreen()
         t = TextTable(1)
@@ -142,7 +152,13 @@ class UserInterface:
             number_of_days=self.FORECAST_SPAN, city=self.NAME_OF_CITY
         )
         info = RequestInfo(parameters=parameters)
-        res = info.getRespoonse(self.TEMPERATURE_UNIT)
+
+        try:
+            res = info.getRespoonse(self.TEMPERATURE_UNIT)
+        except Exception as e:
+            print(e)
+            return
+            
         for index in range(len(res.response_table)):
             # assemple the headers of the table
             tables.append([])
