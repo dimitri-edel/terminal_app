@@ -98,9 +98,9 @@ class UserInterface:
         self.TEMPERATURE_UNIT = "f"
         self.NAME_OF_CITY = "Austin"
 
-    # Show the current temperature
+    # Show the current weather
 
-    def showCurrentTemperature(self):
+    def showCurrentWeather(self):
         # Table that holds the data to be printed
         table = []
         # Parameters for the RequestInfo constructor
@@ -201,7 +201,7 @@ class UserInterface:
             self.printForecast(self.FORECAST_SPAN)
         elif _input.lower() == "current":
             self.clearScreen()
-            self.showCurrentTemperature()
+            self.showCurrentWeather()
         elif _input.lower() == "get settings":
             self.clearScreen()
             self.getSettings()
@@ -278,7 +278,7 @@ class UserInterface:
         swtich_board.append([])
         swtich_board[2] = ["Show the forcast for today", "today"]
         swtich_board.append([])
-        swtich_board[3] = ["Current temperature", "current"]
+        swtich_board[3] = ["Current weather", "current"]
         swtich_board.append([])
         swtich_board[4] = ["Set the temperature unit[Celcius/Fahrenheit]", "set tu"]
         swtich_board.append([])
