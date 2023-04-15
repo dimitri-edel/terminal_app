@@ -1,13 +1,14 @@
 import os  # import operating system routines
 from tabulate import tabulate  # needs pip install tablulate
 
-# import src.gui as gui
+import datetime
 from src.api import RequestInfo, RequestParameters
 from src.config import Configuration as conf
 
 
 class TextTable:
-    def __init__(self, rows) -> None:        
+    def __init__(self, rows) -> None:
+        self.rows = rows
         self.table = []
         for i in range(rows):
             self.table.append([])
@@ -64,8 +65,31 @@ class TextTable:
         self.addForecastColumns(response_info, forecast_mode)
         print(tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
 
-    def printTodaysForecast(self, response_info):
-        pass
+    def printTodaysForecast(self, response_info, forecast_mode):
+        # start with the current hour
+        start_index = datetime.datetime.now().hour - 1 if datetime.datetime.now().hour > 0 else 0
+        # This is the index of the row within the table
+        table_element_index = 0
+        for i in range(start_index, 24, 1):
+            if i == start_index:
+                self.table[table_element_index].append("TIME")
+            elif i <= 9 and i > 0:
+                self.table[table_element_index].append(f"0{table_element_index}:00")
+            else:
+                self.table[table_element_index].append(f"{i}:00")
+            table_element_index += 1
+        # Reset the index of the row within the table
+        table_element_index = 0
+        # Index in the response_table object
+        response_table_index = 0 # The forecast for today will only contain this one entry
+        self.table[table_element_index].append(f"DATE: {response_info.response_table[response_table_index]['date']}")
+        # Now append the rows with data to the column
+        for i in range(start_index, 24, 1):
+           data =  response_info.response_table[response_table_index]["hourly"][i]
+           self.table[table_element_index].append(data)
+           # Next row in the table
+           table_element_index += 1
+        print(tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
 
     def addHoursColumn(self):
         for i in range(25):
@@ -103,7 +127,7 @@ class UserInterface:
         # Which temperature unit should be displayed
         self.TEMPERATURE_UNIT = "f"
         self.NAME_OF_CITY = "Austin"
-        self.FORECAST_MODE = "average"
+        self.FORECAST_MODE = "hourly"
 
     # Show the current weather
 
@@ -144,10 +168,13 @@ class UserInterface:
         # For table with average temperatures use 2 rows
         if self.FORECAST_MODE == "average":
             t = TextTable(2)
+            t.printForcast(response_info=res, forecast_mode=self.FORECAST_MODE)
         # For table with an hourly forecast 25 rows
         else:
-            t = TextTable(25)
-        t.printForcast(response_info=res, forecast_mode=self.FORECAST_MODE)
+            # Number of rows depends on what time it is. 25 - hour , because it includes the current hour
+            rows = 25 - datetime.datetime.now().hour
+            t = TextTable(rows=rows)
+            t.printTodaysForecast(response_info=res, forecast_mode=self.FORECAST_MODE)
 
     def printForecast(self, number_of_days):
         tables = []
