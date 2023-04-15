@@ -1,0 +1,6 @@
+A nasty bug found its way into my work today. The API started to deliver more hourly reports per day than the usual 24 hours.
+This resulted in an index error in TextTable.addForecastColumns()-method, within the loop. The enty_index was getting out
+of range. Took me over an hour of debugging and wrecking my mind to finally pin down the problem. I have no idea as to 
+why the API started appending more hours, which technically belong in the dataset of the next day. However, I simply added
+two lines of code in the loop, which check if the number of datasets exceed 24 (as in 24 hours), then these datasets will be
+skipped.

@@ -7,10 +7,9 @@ from src.config import Configuration as conf
 
 
 class TextTable:
-    def __init__(self, columns) -> None:
-        self.cols = columns
+    def __init__(self, rows) -> None:        
         self.table = []
-        for i in range(25):
+        for i in range(rows):
             self.table.append([])
 
     def add_header(self, column_index, text):
@@ -59,9 +58,10 @@ class TextTable:
         table = [["col1", "col2"], [1, 2], [3, 4]]
         print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
 
-    def printForcast(self, response_info):
-        self.addHoursColumn()
-        self.addForecastColumns(response_info=response_info)
+    def printForcast(self, response_info, forecast_mode):
+        if forecast_mode == "hourly":
+            self.addHoursColumn()
+        self.addForecastColumns(response_info, forecast_mode)
         print(tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
 
     def printTodaysForecast(self, response_info):
@@ -76,15 +76,21 @@ class TextTable:
             else:
                 self.table[i].append(str(i) + ":00")
 
-    def addForecastColumns(self, response_info):
-        for response_table_index in range(len(response_info.response_table)):
+    def addForecastColumns(self, response_info, forecast_mode):
+         for response_table_index in range(len(response_info.response_table)):            
             entry_index = 1
             self.table[0].append(
                 "DATE: "
                 + str(response_info.response_table[response_table_index]["date"])
             )
-            for hourly in response_info.response_table[response_table_index]["hourly"]:
-                self.table[entry_index].append(hourly)
+            if forecast_mode == "hourly":
+                for hourly in response_info.response_table[response_table_index]["hourly"]:
+                    self.table[entry_index].append(hourly)
+                    # Go to the next entry
+                    entry_index += 1
+            else:
+                entry_text = f"{response_info.response_table[response_table_index]['avg_temp']} {response_info.response_table[response_table_index]['condition']}"
+                self.table[entry_index].append(entry_text)
                 # Go to the next entry
                 entry_index += 1
 
@@ -97,6 +103,7 @@ class UserInterface:
         # Which temperature unit should be displayed
         self.TEMPERATURE_UNIT = "f"
         self.NAME_OF_CITY = "Austin"
+        self.FORECAST_MODE = "average"
 
     # Show the current weather
 
@@ -110,16 +117,12 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
         # Extract the response, received from the API
         try:
-            res = info.getRespoonse(self.TEMPERATURE_UNIT)
+            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE)
         except Exception as e:
             print(e)
             return
 
-        curr_temp = str(res.response_table[0]["current_temperature"])
-        if self.TEMPERATURE_UNIT == "f":
-            curr_temp = str(curr_temp) + " F"
-        else:
-            curr_temp = str(curr_temp) + " C"
+        curr_temp = str(res.response_table[0]["current_temperature"])        
         curr_date = str(res.response_table[0]["date"])
         table.append([])
         table[0] = ["CURRENT DATE: ", "CURRENT TEMPERATURE: "]
@@ -134,12 +137,17 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
         
         try:
-            res = info.getRespoonse(self.TEMPERATURE_UNIT)
+            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE)
         except Exception as e:
             print(e)
             return        
-        t = TextTable(1)
-        t.printForcast(response_info=res)
+        # For table with average temperatures use 2 rows
+        if self.FORECAST_MODE == "average":
+            t = TextTable(2)
+        # For table with an hourly forecast 25 rows
+        else:
+            t = TextTable(25)
+        t.printForcast(response_info=res, forecast_mode=self.FORECAST_MODE)
 
     def printForecast(self, number_of_days):
         tables = []
@@ -150,7 +158,7 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
 
         try:
-            res = info.getRespoonse(self.TEMPERATURE_UNIT)
+            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE)
         except Exception as e:
             print(e)
             return
@@ -159,20 +167,25 @@ class UserInterface:
             # assemple the headers of the table
             tables.append([])
             tables[table_index].append(["DATE", res.response_table[index]["date"]])
-            hour = 0
-            for time in res.response_table[index]["hourly"]:
-                str_temp = str(time)
-                str_time = str(hour) + ":00 "
-                # assemple next row of the table
-                tables[table_index].append([str_time, str_temp])
-                # next hour
-                hour += 1
+            if self.FORECAST_MODE == "hourly":
+                hour = 0
+                for time in res.response_table[index]["hourly"]:
+                    str_temp = str(time)
+                    str_time = str(hour) + ":00 "
+                    # assemple next row of the table
+                    tables[table_index].append([str_time, str_temp])
+                    # next hour
+                    hour += 1
             # next teble
             table_index += 1
        
-        # test the table class
-        t = TextTable(7)
-        t.printForcast(response_info=res)
+        # For table with average temperatures use 2 rows
+        if self.FORECAST_MODE == "average":
+            t = TextTable(2)
+        # For table with an hourly forecast 25 rows
+        else:
+            t = TextTable(25)
+        t.printForcast(response_info=res, forecast_mode=self.FORECAST_MODE)
 
     def printTable(self):
         table = TextTable(2)
