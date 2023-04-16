@@ -53,14 +53,18 @@ class RequestInfo:
             additional_text = "You might have misspelled the name of the city, or the city is not covered!"            
             raise Exception(json_obj["error"]["message"] + additional_text)
 
+        """ Current readings are inside a dictionary named 'current'. Attach current readings
+            to the first row in response.response_table
+        """
         if temperature_unit == 'f':
             current_temperature = f"{json_obj['current']['temp_f']}°F"
         else:
             current_temperature = f"{json_obj['current']['temp_c']}°C"
         response.response_table[day]['current_temperature'] = current_temperature
         response.response_table[day]['date']\
-            = self.extract_date(json_obj['location']['localtime']
-                                )
+            = self.extract_date(json_obj['location']['localtime'])
+        
+        # Find dictionary named 'forecastday', and copy relevant data to response.response_table
         for first_layer in json_obj:
             for second_layer in json_obj[first_layer]:
                 if second_layer == 'forecastday':
@@ -72,7 +76,8 @@ class RequestInfo:
                             date = self.extract_date(day_info['date'])
                             # add date of the current element to response
                             response.response_table[day]['date'] = date
-                        # If the forecast_mode is set to 'average', then skip the hourly forecast
+                        # If the forecast_mode is set to 'average', then copy relevant data
+                        # to response.response_table and skip the hourly forecast
                         if forecast_mode == 'average':
                             # Weather condition text
                             condition = day_info['day']['condition']['text']

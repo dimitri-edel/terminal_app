@@ -9,10 +9,24 @@ from src.config import Configuration as conf
 class TextTable:
     def __init__(self, rows) -> None:
         self.rows = rows
+        self.current_row = 0
+        self.current_column = 0
         self.table = []
         for i in range(rows):
             self.table.append([])
 
+    def next_row(self):
+        self.current_row += 1
+
+    def next_column(self):
+        self.current_column += 1
+
+    def reset_column(self):
+        self.current_column = 0
+
+    def reset_row(self):
+        self.current_row = 0
+    
     def add_header(self, column_index, text):
         pass
 
@@ -69,54 +83,57 @@ class TextTable:
         # start with the current hour
         start_index = datetime.datetime.now().hour - 1 if datetime.datetime.now().hour > 0 else 0
         # This is the index of the row within the table
-        table_element_index = 0
+        self.reset_row()
         for i in range(start_index, 24, 1):
             if i == start_index:
-                self.table[table_element_index].append("TIME")
+                self.table[self.current_row].append("TIME")
             elif i <= 9 and i > 0:
-                self.table[table_element_index].append(f"0{table_element_index}:00")
+                self.table[self.current_row].append(f"0{self.current_row}:00")
             else:
-                self.table[table_element_index].append(f"{i}:00")
-            table_element_index += 1
+                self.table[self.current_row].append(f"{i}:00")
+            self.next_row()
         # Reset the index of the row within the table
-        table_element_index = 0
+        self.reset_row()
         # Index in the response_table object
         response_table_index = 0 # The forecast for today will only contain this one entry
-        self.table[table_element_index].append(f"DATE: {response_info.response_table[response_table_index]['date']}")
+        self.table[self.current_row].append(f"DATE: {response_info.response_table[response_table_index]['date']}")
         # Now append the rows with data to the column
         for i in range(start_index, 24, 1):
            data =  response_info.response_table[response_table_index]["hourly"][i]
-           self.table[table_element_index].append(data)
+           self.table[self.current_row].append(data)
            # Next row in the table
-           table_element_index += 1
+           self.next_row()
         print(tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
 
     def addHoursColumn(self):
-        for i in range(25):
-            if i == 0:
-                self.table[i].append("TIME")
-            elif i <= 9 and i > 0:
-                self.table[i].append("0" + str(i) + ":00")
+        for row in range(25):
+            if row == 0:
+                self.table[row].append("TIME")
+            elif row <= 9 and row > 0:
+                self.table[row].append("0" + str(row) + ":00")
             else:
-                self.table[i].append(str(i) + ":00")
+                self.table[row].append(str(row) + ":00")
 
     def addForecastColumns(self, response_info, forecast_mode):
-         for response_table_index in range(len(response_info.response_table)):            
-            entry_index = 1
-            self.table[0].append(
+         for response_table_index in range(len(response_info.response_table)):
+            # Reset the current_row within the table
+            self.reset_row()
+            self.table[self.current_row].append(
                 "DATE: "
                 + str(response_info.response_table[response_table_index]["date"])
             )
+            # Go to the next row
+            self.next_row()
             if forecast_mode == "hourly":
                 for hourly in response_info.response_table[response_table_index]["hourly"]:
-                    self.table[entry_index].append(hourly)
+                    self.table[self.current_row].append(hourly)
                     # Go to the next entry
-                    entry_index += 1
+                    self.next_row()
             else:
                 entry_text = f"{response_info.response_table[response_table_index]['avg_temp']} {response_info.response_table[response_table_index]['condition']}"
-                self.table[entry_index].append(entry_text)
+                self.table[self.current_row].append(entry_text)
                 # Go to the next entry
-                entry_index += 1
+                self.next_row()
 
 
 class UserInterface:
