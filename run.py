@@ -4,7 +4,7 @@ from tabulate import tabulate  # needs pip install tablulate
 import datetime
 from src.api import RequestInfo, RequestParameters
 from src.config import Configuration as conf
-
+import textwrap
 
 class TextTable:
     def __init__(self, rows) -> None:
@@ -271,6 +271,9 @@ class UserInterface:
         elif _input.lower() == "city":
             self.clearScreen()
             self.setNameOfCity()
+        elif _input.lower() == "set fm":
+            self.clearScreen()
+            self.setForecastMode()
         else:
             print(f"The command '{_input}' is not defined!")
     
@@ -310,6 +313,16 @@ class UserInterface:
         self.updateSettings()
         print(f"Name of city set to {city.capitalize()}")
 
+    def setForecastMode(self):
+        fm = input("Enter forecast mode: [AVG | HLY]?")
+        if fm.lower() == "avg":
+            self.FORECAST_MODE = "average"            
+        elif fm.lower() == "hly":
+            self.FORECAST_MODE = "hourly"
+        else:
+            print("The only options are : AVG and HLY !")
+        print(f"Current forecast mode: {self.FORECAST_MODE}")
+
     def updateSettings(self):
         conf().updateSettings(
             temp_unit=self.TEMPERATURE_UNIT, forecast_span=self.FORECAST_SPAN, name_of_city=self.NAME_OF_CITY
@@ -342,11 +355,20 @@ class UserInterface:
         swtich_board[5] = [
             "Set the span of a forecast. How many days to cover? Maximum is 7!",
             "set fs",
-        ]   
+        ]
         swtich_board.append([])
-        swtich_board[6] = ["Set name of the city for for which you want the forecast to be.\nIf not set, the setting defaults to 'Austin, TX, USA'.", "city"]     
+        # To let the table display the description and not let the line of source-code get to long
+        # I will declare the description in several lines and then strip it of whitespaces to make it
+        # look decent in the table
+        desc = '''Set forecast mode. It lets you choose between hourly and average temperatures.
+        If set to hourly, forecast for every hour of each day will be displayed.
+        If set to average, forecast will only display the average temperature of each day.'''
+        dedent = '\n'.join([m.lstrip() for m in desc.split('\n')])
+        swtich_board[6] = [dedent, "set fm"]   
         swtich_board.append([])
-        swtich_board[7] = ["Exit", "exit"]
+        swtich_board[7] = ["Set name of the city for for which you want the forecast to be.\nIf not set, the setting defaults to 'Austin, TX, USA'.", "city"]     
+        swtich_board.append([])
+        swtich_board[8] = ["Exit", "exit"]
         print(tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
 
     def clearScreen(self):

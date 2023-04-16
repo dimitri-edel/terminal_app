@@ -4,3 +4,6 @@ of range. Took me over an hour of debugging and wrecking my mind to finally pin 
 why the API started appending more hours, which technically belong in the dataset of the next day. However, I simply added
 two lines of code in the loop, which check if the number of datasets exceed 24 (as in 24 hours), then these datasets will be
 skipped.
+The textwraper.dedent() method is not doing what it's supposed to. After applying it the text still appears indented in the
+TextTable. Found this on stackoverflow.com <code> print('\n'.join([m.lstrip() for m in message.split('\n')]))</code>.
+I adjusted that to my code and it worked, the multi-line text appears without indentions.
