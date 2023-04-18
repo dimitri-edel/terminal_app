@@ -338,25 +338,20 @@ class UserInterface:
 
     def printSwitchBoard(self):
         swtich_board = []
-        swtich_board.append([])
-        swtich_board[0] = ["DESCRIPTION", "COMMAND"]
-        swtich_board.append([])
-        swtich_board[1] = [
+        # swtich_board.append([])
+        # swtich_board[0] = ["DESCRIPTION", "COMMAND"]        
+        swtich_board.append(["DESCRIPTION", "COMMAND"])
+        swtich_board.append([
             "Show the forcast for the number of days, defined in the settings. \nDefault is 7 days, and temperature unit defaults to Fahreinheit!",
             "forecast",
-        ]
-        swtich_board.append([])
-        swtich_board[2] = ["Show the forcast for today", "today"]
-        swtich_board.append([])
-        swtich_board[3] = ["Current weather", "current"]
-        swtich_board.append([])
-        swtich_board[4] = ["Set the temperature unit[Celcius/Fahrenheit]", "set tu"]
-        swtich_board.append([])
-        swtich_board[5] = [
+        ])
+        swtich_board.append(["Show the forcast for today", "today"])
+        swtich_board.append(["Current weather", "current"])
+        swtich_board.append(["Set the temperature unit[Celcius/Fahrenheit]", "set tu"])
+        swtich_board.append([
             "Set the span of a forecast. How many days to cover? Maximum is 7!",
             "set fs",
-        ]
-        swtich_board.append([])
+        ])        
         # To let the table display the description and not let the line of source-code get to long
         # I will declare the description in several lines and then strip it of whitespaces to make it
         # look decent in the table
@@ -364,11 +359,9 @@ class UserInterface:
         If set to hourly, forecast for every hour of each day will be displayed.
         If set to average, forecast will only display the average temperature of each day.'''
         dedent = '\n'.join([m.lstrip() for m in desc.split('\n')])
-        swtich_board[6] = [dedent, "set fm"]   
-        swtich_board.append([])
-        swtich_board[7] = ["Set name of the city for for which you want the forecast to be.\nIf not set, the setting defaults to 'Austin, TX, USA'.", "city"]     
-        swtich_board.append([])
-        swtich_board[8] = ["Exit", "exit"]
+        swtich_board.append([dedent, "set fm"])
+        swtich_board.append(["Set name of the city for for which you want the forecast to be.\nIf not set, the setting defaults to 'Austin, TX, USA'.", "city"])
+        swtich_board.append(["Exit", "exit"])
         print(tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
 
     def clearScreen(self):
