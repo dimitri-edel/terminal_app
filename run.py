@@ -5,6 +5,7 @@ import datetime
 from src.api import RequestInfo, RequestParameters
 from src.config import Configuration as conf
 import textwrap
+import src.json_file as jsn
 
 class TextTable:
     def __init__(self, rows) -> None:
@@ -158,7 +159,7 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
         # Extract the response, received from the API
         try:
-            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE)
+            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
         except Exception as e:
             print(e)
             return
@@ -178,7 +179,7 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
         
         try:
-            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE)
+            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
         except Exception as e:
             print(e)
             return        
@@ -202,7 +203,7 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
 
         try:
-            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE)
+            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
         except Exception as e:
             print(e)
             return
@@ -370,3 +371,11 @@ class UserInterface:
 
 user = UserInterface()
 user.main()
+
+# js = jsn.JsonFile()
+# t = TextTable(25)
+# t.printForcast(
+#     response_info=js.test(), forecast_mode="hourly"
+# )
+
+

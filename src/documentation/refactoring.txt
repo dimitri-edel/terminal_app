@@ -1,0 +1,102 @@
+REFACTORING api.RequestInfo.getResponse()
+
+First of all the method uses the requests library method get() to send an HTTP-Request to the API and receive an
+HTTP-Response, which comes back in form of a JSON-object. The json object is translated to a python dictionary
+by calling the json() method on the request object.
+Then it checks if the response from the API is an ERROR-message or not. If it is, an Exception is reaised.
+Then it parses through the dictionary collecting information and packing it inside a simplified version of the dictionary
+that lives inside the object named response ('response' is an instance of ResponseInfo)
+The intial code works without any problems, yet MY problem is that it is too bulky and is difficult to read. So I want
+to break it up into several methods and reorganize it as best I can, to make it more comprehensible.
+
+Here is the initial code from api.RequestInfo.getResponse():
+
+###################################################################################################################################################
+    def getRespoonse(self, temperature_unit, forecast_mode):
+        day = 0
+        response = ResponseInfo()
+        x = requests.get(self.CURL)
+        json_obj = x.json()
+        # If the response returns an error, then raise an exception
+        if "error" in json_obj:
+            additional_text = "You might have misspelled the name of the city, or the city is not covered!"            
+            raise Exception(json_obj["error"]["message"] + additional_text)
+
+        """ Current readings are inside a dictionary named 'current'. Attach current readings
+            to the first row in response.response_table
+        """
+        if temperature_unit == 'f':
+            current_temperature = f"{json_obj['current']['temp_f']}°F"
+        else:
+            current_temperature = f"{json_obj['current']['temp_c']}°C"
+        response.response_table[day]['current_temperature'] = current_temperature
+        response.response_table[day]['date']\
+            = self.extract_date(json_obj['location']['localtime'])
+        
+        # Find dictionary named 'forecastday', and copy relevant data to response.response_table
+        for first_layer in json_obj:
+            for second_layer in json_obj[first_layer]:
+                if second_layer == 'forecastday':
+                    for day_info in json_obj[first_layer][second_layer]:
+                        # The date has already been added to the first element
+                        # before the loop, so skip the first entry
+                        if day > 0:
+                            # Extract date from the timestamp in the json_obj
+                            date = self.extract_date(day_info['date'])
+                            # add date of the current element to response
+                            response.response_table[day]['date'] = date
+                        # If the forecast_mode is set to 'average', then copy relevant data
+                        # to response.response_table and skip the hourly forecast
+                        if forecast_mode == 'average':
+                            # Weather condition text
+                            condition = day_info['day']['condition']['text']
+                            # avaerage temperature
+                            avg_temp = day_info['day']['avgtemp_c'] if temperature_unit == 'c' else day_info['day']['avgtemp_f']
+                            response.response_table[day]['avg_temp'] = f"{avg_temp}°{temperature_unit.upper()}"
+                            response.response_table[day]['condition'] = condition  
+                           # Increment the current element index
+                            day += 1
+                            # Add another dictionary to the list in the response
+                            response.nextDay()
+                            continue
+                        hourly_count = 0
+                        # add hourly report for the current element to respoonse
+                        for hourly in day_info['hour']:
+                            hourly_count += 1
+                            # Sometimes the api delivers further hours for the night time, which makes no sense
+                            # because the same data is in the next days data, but the API started doing that today
+                            # So, I need to make sure that the table has a consistent length, or else it will result
+                            # in an ERROR
+                            if hourly_count > 24:                                
+                                continue                            
+                            if temperature_unit == 'f':
+                                response.response_table[
+                                    day]['hourly'].append(f"{hourly['temp_f']}°{temperature_unit.upper()} {hourly['condition']['text']}")
+                            else:
+                                response.response_table[
+                                    day]['hourly'].append(f"{hourly['temp_c']}°{temperature_unit.upper()} {hourly['condition']['text']}")
+                        # Increment the current element index
+                        day += 1
+                        # Add another dictionary to the list in the response
+                        response.nextDay()                        
+        return response
+###################################################################################################################################################
+
+1) 
+Extract a method from the innermost nested loop, which begins with : "for day_info in json_obj[first_layer][second_layer]:"
+and name it extract_forecastday(), 'forecastday' is the name of the nested dictionary.
+2)
+Extract a method from the loop inside extract_forecastday() and name it 'extract_hourly'. 
+3)
+I examined the json object more closely this time and foound out that there is no necessity for looping through the first
+two levels of it anyway. I can simply referr to the targeted dictionary by using the keys. So, two for-loops got kicked to the curb.
+Also, in the newly extracted method 'extract_forecastday' two parameters, namely first_layer and second_layer are kicked as well.
+4)
+Extract method for the part, where the current readings are extracted from the dictonary and placed inside the response object.
+I name the method extract_current_weather().
+5)
+I rename the extract_forecastday()-method to extract_forecast(). This way the function reads like: First, extract the current weather data, 
+then extract the forecast data.That is more comprehensible than it was before.
+6)
+Extract method extract_hourly_forecast(). This method will replace the loop that lives inside the extract_forecast()-method. Its purpose is
+to extract hourly forecasts for each day. 
