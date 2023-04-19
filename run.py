@@ -28,13 +28,13 @@ class TextTable:
     def reset_row(self):
         self.current_row = 0
     
-    def printForcast(self, response_info, forecast_mode):
+    def print_forecast(self, response_info, forecast_mode):
         if forecast_mode == "hourly":
-            self.addHoursColumn()
-        self.addForecastColumns(response_info, forecast_mode)
+            self.add_hours_column()
+        self.add_forecast_columns(response_info, forecast_mode)
         print(tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
 
-    def printTodaysForecast(self, response_info, forecast_mode):
+    def print_todays_forecast(self, response_info, forecast_mode):
         # start with the current hour
         start_index = datetime.datetime.now().hour - 1 if datetime.datetime.now().hour > 0 else 0
         # This is the index of the row within the table
@@ -60,7 +60,7 @@ class TextTable:
            self.next_row()
         print(tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
 
-    def addHoursColumn(self):
+    def add_hours_column(self):
         for row in range(25):
             if row == 0:
                 self.table[row].append("TIME")
@@ -69,7 +69,7 @@ class TextTable:
             else:
                 self.table[row].append(str(row) + ":00")
 
-    def addForecastColumns(self, response_info, forecast_mode):
+    def add_forecast_columns(self, response_info, forecast_mode):
          for response_table_index in range(len(response_info.response_table)):
             # Reset the current_row within the table
             self.reset_row()
@@ -103,7 +103,7 @@ class UserInterface:
 
     # Show the current weather
 
-    def showCurrentWeather(self):
+    def show_current_weather(self):
         # Table that holds the data to be printed
         table = []
         # Parameters for the RequestInfo constructor
@@ -128,7 +128,7 @@ class UserInterface:
 
     """Print the forecast for the current day """
 
-    def printTodaysForecast(self):
+    def print_todays_forecast(self):
         parameters = RequestParameters(number_of_days=1, city=self.NAME_OF_CITY)
         info = RequestInfo(parameters=parameters)
         
@@ -140,15 +140,15 @@ class UserInterface:
         # For table with average temperatures use 2 rows
         if self.FORECAST_MODE == "average":
             t = TextTable(2)
-            t.printForcast(response_info=res, forecast_mode=self.FORECAST_MODE)
+            t.print_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
         # For table with an hourly forecast 25 rows
         else:
             # Number of rows depends on what time it is. 25 - hour , because it includes the current hour
             rows = 25 - datetime.datetime.now().hour
             t = TextTable(rows=rows)
-            t.printTodaysForecast(response_info=res, forecast_mode=self.FORECAST_MODE)
+            t.print_todays_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
 
-    def printForecast(self, number_of_days):
+    def print_forecast(self, number_of_days):
         tables = []
         table_index = 0
         parameters = RequestParameters(
@@ -184,51 +184,51 @@ class UserInterface:
         # For table with an hourly forecast 25 rows
         else:
             t = TextTable(25)
-        t.printForcast(response_info=res, forecast_mode=self.FORECAST_MODE)
+        t.print_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
 
-    def printTable(self):
-        table = TextTable(2)
-        table.printTable()
+    # def printTable(self):
+    #     table = TextTable(2)
+    #     table.printTable()
 
     # Starting point
     def main(self):
-        self.getSettings()
+        self.get_settings()
         # Clear the screen when starting up
-        self.clearScreen()
+        self.clear_screen()
         while self.EXIT is False:
-            self.getUserInput()
+            self.get_user_input()
 
     # Process user's input
 
-    def getUserInput(self):
-        self.printSwitchBoard()
+    def get_user_input(self):
+        self.print_switchboard()
         _input = input("Enter command:")
         if _input.lower() == "exit":
             self.EXIT = True
         elif _input.lower() == "today":
-            self.clearScreen()
-            self.printTodaysForecast()
+            self.clear_screen()
+            self.print_todays_forecast()
         elif _input.lower() == "forecast":
-            self.clearScreen()
-            self.printForecast(self.FORECAST_SPAN)
+            self.clear_screen()
+            self.print_forecast(self.FORECAST_SPAN)
         elif _input.lower() == "current":
-            self.clearScreen()
-            self.showCurrentWeather()
+            self.clear_screen()
+            self.show_current_weather()
         elif _input.lower() == "get settings":
-            self.clearScreen()
-            self.getSettings()
+            self.clear_screen()
+            self.get_settings()
         elif _input.lower() == "set tu":
-            self.clearScreen()
-            self.setTemperatureUnit()
+            self.clear_screen()
+            self.set_temperature_unit()
         elif _input.lower() == "set fs":
-            self.clearScreen()
-            self.setForecastSpan()
+            self.clear_screen()
+            self.set_forecast_span()
         elif _input.lower() == "city":
-            self.clearScreen()
-            self.setNameOfCity()
+            self.clear_screen()
+            self.set_name_of_city()
         elif _input.lower() == "set fm":
-            self.clearScreen()
-            self.setForecastMode()
+            self.clear_screen()
+            self.set_forecast_mode()
         else:
             print(f"The command '{_input}' is not defined!")
     
@@ -236,7 +236,7 @@ class UserInterface:
     # Set the preferred temperature unit
     # User can choose between Fahrenheit and Celcius
 
-    def setTemperatureUnit(self):
+    def set_temperature_unit(self):
         unit = input("Enter temperature unit [ F / C ] :")
         if unit.lower() == "f" or unit.lower() == "c":
             self.TEMPERATURE_UNIT = unit
@@ -247,7 +247,7 @@ class UserInterface:
         else:
             print("You can only put F for Fahrenheit or C for Celicius!")
 
-    def setForecastSpan(self):
+    def set_forecast_span(self):
         days = input("Enter number of days: ")
         setting = 0
         if days.isnumeric():
@@ -257,18 +257,18 @@ class UserInterface:
             else:
                 setting = int(days)
             self.FORECAST_SPAN = setting
-            self.updateSettings()
+            self.update_settings()
             print(f"Forecast span set to {days} days!")
         else:
             print("Number of days must be a number!")
 
-    def setNameOfCity(self):
+    def set_name_of_city(self):
         city = input("Enter name of city:")
         self.NAME_OF_CITY = city.capitalize()
-        self.updateSettings()
+        self.update_settings()
         print(f"Name of city set to {city.capitalize()}")
 
-    def setForecastMode(self):
+    def set_forecast_mode(self):
         fm = input("Enter forecast mode: [AVG | HLY]?")
         if fm.lower() == "avg":
             self.FORECAST_MODE = "average"            
@@ -278,20 +278,20 @@ class UserInterface:
             print("The only options are : AVG and HLY !")
         print(f"Current forecast mode: {self.FORECAST_MODE}")
 
-    def updateSettings(self):
-        conf().updateSettings(
+    def update_settings(self):
+        conf().update_settings(
             temp_unit=self.TEMPERATURE_UNIT, forecast_span=self.FORECAST_SPAN, name_of_city=self.NAME_OF_CITY
         )
         print("Settings have been updated!")
 
     # Read settings from the file
-    def getSettings(self):
-        data = conf().getSettings()
+    def get_settings(self):
+        data = conf().get_settings()
         self.TEMPERATURE_UNIT = data["temperature_unit"]
         self.FORECAST_SPAN = data["forecast_span"]
         self.NAME_OF_CITY = data["name_of_city"]
 
-    def printSwitchBoard(self):
+    def print_switchboard(self):
         swtich_board = []
         # swtich_board.append([])
         # swtich_board[0] = ["DESCRIPTION", "COMMAND"]        
@@ -319,7 +319,7 @@ class UserInterface:
         swtich_board.append(["Exit", "exit"])
         print(tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
 
-    def clearScreen(self):
+    def clear_screen(self):
         os.system("cls" if os.name == "nt" else "clear")
 
 
@@ -328,7 +328,7 @@ user.main()
 
 # js = jsn.JsonFile()
 # t = TextTable(25)
-# t.printForcast(
+# t.print_forecast(
 #     response_info=js.test(), forecast_mode="hourly"
 # )
 

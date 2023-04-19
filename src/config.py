@@ -2,7 +2,7 @@ import os  # import operating system routines
 
 
 class Configuration:
-    def updateSettings(self, temp_unit, forecast_span, name_of_city):
+    def update_settings(self, temp_unit, forecast_span, name_of_city):
         file_content = "tu=" + temp_unit + \
             " " + "days=" + str(forecast_span) + \
                 " " + "city=" + name_of_city
@@ -14,7 +14,7 @@ class Configuration:
         return data
 
     # Read settings from the file
-    def getSettings(self):
+    def get_settings(self):
         data = {'temperature_unit': "", 'forecast_span': 0, "name_of_city": ""}
         try:
             path = os.path.normcase("./conf/settings.sf")
@@ -30,4 +30,4 @@ class Configuration:
             return data
         except FileNotFoundError:
             # Create settings-file using default values
-            return self.updateSettings(temp_unit='f', forecast_span=7, name_of_city="London")
+            return self.update_settings(temp_unit='f', forecast_span=7, name_of_city="London")
