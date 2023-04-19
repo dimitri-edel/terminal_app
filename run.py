@@ -73,10 +73,7 @@ class TextTable:
          for response_table_index in range(len(response_info.response_table)):
             # Reset the current_row within the table
             self.reset_row()
-            self.table[self.current_row].append(
-                "DATE: "
-                + str(response_info.response_table[response_table_index]["date"])
-            )
+            self.table[self.current_row].append(str(response_info.response_table[response_table_index]["date"]))
             # Go to the next row
             self.next_row()
             if forecast_mode == "hourly":
@@ -120,10 +117,11 @@ class UserInterface:
 
         curr_temp = str(res.response_table[0]["current_temperature"])        
         curr_date = str(res.response_table[0]["date"])
+        condition = str(res.response_table[0]["condition"])
         table.append([])
-        table[0] = ["CURRENT DATE: ", "CURRENT TEMPERATURE: "]
+        table[0] = ["CURRENT DATE: ", "CURRENT TEMPERATURE: ", "CONDITION:"]
         table.append([])
-        table[1] = [curr_date, curr_temp]        
+        table[1] = [curr_date, curr_temp, condition]        
         print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
 
     """Print the forecast for the current day """

@@ -75,6 +75,7 @@ class RequestInfo:
         response.response_table[current_day_index]["date"] = self.extract_date(
             json_obj["location"]["localtime"]
         )
+        response.response_table[current_day_index]["condition"] = json_obj["current"]["condition"]["text"]
 
     def extract_forecast(self, json_obj, response, forecast_mode, temperature_unit, forecast_span):
         # Day index is used for
