@@ -28,52 +28,6 @@ class TextTable:
     def reset_row(self):
         self.current_row = 0
     
-    def add_header(self, column_index, text):
-        pass
-
-    def add_cell_to_column(self, column_index, text):
-        pass
-
-    def addCellToRow(self, text):
-        pass
-
-    def printTable(self):
-        # Headings
-        print(
-            chr(0x2554)
-            + chr(0x2550) * 20
-            + chr(0x2566)
-            + chr(0x2550) * 20
-            + chr(0x2557)
-        )
-        print(chr(0x2551) + " " * 20 + chr(0x2551) + " " * 20 + chr(0x2551))
-        print(
-            chr(0x255A)
-            + chr(0x2550) * 20
-            + chr(0x2569)
-            + chr(0x2550) * 20
-            + chr(0x255D)
-        )
-        # Cells
-        print(
-            chr(0x250C)
-            + chr(0x2500) * 20
-            + chr(0x252C)
-            + chr(0x2500) * 20
-            + chr(0x2510)
-        )
-        print(chr(0x2502) + " " * 20 + chr(0x2502) + " " * 20 + chr(0x2502))
-        print(
-            chr(0x2514)
-            + chr(0x2500) * 20
-            + chr(0x2534)
-            + chr(0x2500) * 20
-            + chr(0x2518)
-        )
-
-        table = [["col1", "col2"], [1, 2], [3, 4]]
-        print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
-
     def printForcast(self, response_info, forecast_mode):
         if forecast_mode == "hourly":
             self.addHoursColumn()
@@ -159,7 +113,7 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
         # Extract the response, received from the API
         try:
-            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
+            res = info.get_response(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
         except Exception as e:
             print(e)
             return
@@ -179,7 +133,7 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
         
         try:
-            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
+            res = info.get_response(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
         except Exception as e:
             print(e)
             return        
@@ -203,7 +157,7 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
 
         try:
-            res = info.getRespoonse(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
+            res = info.get_response(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
         except Exception as e:
             print(e)
             return

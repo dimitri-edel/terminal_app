@@ -40,7 +40,7 @@ class RequestInfo:
     a JSON-file. The map contains all the weather-data received from the API
     """
 
-    def getRespoonse(self, temperature_unit, forecast_mode, forecast_span):
+    def get_response(self, temperature_unit, forecast_mode, forecast_span):
         response = ResponseInfo()
         x = requests.get(self.CURL)
         json_obj = x.json()
@@ -109,7 +109,7 @@ class RequestInfo:
                     break
                 else:
                     # Add another dictionary to the list in the response
-                    response.nextDay()
+                    response.next_day()
                     continue
 
             # add hourly report for the current element to respoonse
@@ -123,7 +123,7 @@ class RequestInfo:
                 break
             else:
                 # Add another dictionary to the list in the response
-                response.nextDay()
+                response.next_day()
 
     def extract_hourly_forecast(self, response, temperature_unit, day_index, day_info):
         # Sometimes the api delivers further hours for the night time, in which case the number of
@@ -164,18 +164,18 @@ class RequestInfo:
         data_day = int(data_split[2])
         date_obj = date(data_year, data_month, data_day)
         date_as_str = ""
-        data_weekday = self.getWeekdayName(date_obj)
+        data_weekday = self.get_name_of_weekday(date_obj)
         date_as_str = (
-            data_weekday + " " + str(data_day) + "." + self.getMonthName(data_month - 1)
+            data_weekday + " " + str(data_day) + "." + self.get_name_of_month(data_month - 1)
         )
 
         return date_as_str
 
-    def getWeekdayName(self, date):
+    def get_name_of_weekday(self, date):
         weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         return weekdays[date.weekday()]
 
-    def getMonthName(self, month_as_int):
+    def get_name_of_month(self, month_as_int):
         months = [
             "Jan",
             "Feb",
@@ -206,6 +206,6 @@ class ResponseInfo:
         self.response_table = []
         self.response_table.append(current_day)
 
-    def nextDay(self):
+    def next_day(self):
         next_row = {"date": "", "avg_temp": "", "condition": "", "hourly": []}
         self.response_table.append(next_row)
