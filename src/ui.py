@@ -291,28 +291,42 @@ class UserInterface:
     def print_switchboard(self):
         swtich_board = []
         # swtich_board.append([])
-        # swtich_board[0] = ["DESCRIPTION", "COMMAND"]        
+        # swtich_board[0] = ["desc_fmRIPTION", "COMMAND"]        
         swtich_board.append(["DESCRIPTION", "COMMAND"])
-        swtich_board.append([
-            "Show the forcast for the number of days, defined in the settings. \nDefault is 3 days, and temperature unit defaults to Fahreinheit!",
-            "forecast",
-        ])
+        # description string of the forecast command
+        desc_forecast = """Show the forcast for the number of days,
+        defined in the settings.Default is 3 days,
+        and temperature unit defaults to Fahreinheit!"""
+        # remove indentations from the multiline string
+        dedent_forecast = '\n'.join([m.lstrip() for m in desc_forecast.split('\n')])
+        swtich_board.append([dedent_forecast, "forecast"])
         swtich_board.append(["Show the forcast for today", "today"])
         swtich_board.append(["Current weather", "current"])
         swtich_board.append(["Set the temperature unit[Celcius/Fahrenheit]", "set tu"])
-        swtich_board.append([
-            "Set the span of a forecast. How many days to cover? Maximum is 7!",
-            "set fs",
-        ])        
-        # To let the table display the description and not let the line of source-code get to long
-        # I will declare the description in several lines and then strip it of whitespaces to make it
-        # look decent in the table
-        desc = '''Set forecast mode. It lets you choose between hourly and average temperatures.
-        If set to hourly, forecast for every hour of each day will be displayed.
-        If set to average, forecast will only display the average temperature of each day.'''
-        dedent = '\n'.join([m.lstrip() for m in desc.split('\n')])
-        swtich_board.append([dedent, "set fm"])
-        swtich_board.append(["Set name of the city for for which you want the forecast to be.\nIf not set, the setting defaults to 'Austin, TX, USA'.", "city"])
+        # description of the set temerature unit command
+        desc_tu = """Set the span of a forecast.
+        How many days to cover?
+        Maximum is 7!"""
+        # remove indentations from the multiline string
+        dedent_tu = '\n'.join([m.lstrip() for m in desc_tu.split('\n')])
+        swtich_board.append([dedent_tu,"set fs"])
+        # description of the set forecast mode command
+        desc_fm = '''Set forecast mode. It lets you choose between hourly
+        and average temperatures. If set to hourly,
+        forecast for every hour of each day will
+        be displayed. If set to average, forecast
+        will only display the average temperature
+        of each day.'''
+        # remove indentations from the multiline string
+        dedent_fm = '\n'.join([m.lstrip() for m in desc_fm.split('\n')])
+        swtich_board.append([dedent_fm, "set fm"])
+        # description of the city command
+        desc_city = """Set name of the city for for which you want
+        the forecast to be. If not set, the setting
+        defaults to 'Austin, TX, USA'."""
+        # remove indentations from the multiline string
+        dedent_city = '\n'.join([m.lstrip() for m in desc_city.split('\n')])
+        swtich_board.append([dedent_city, "city"])
         swtich_board.append(["Exit", "exit"])
         print(tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
 
