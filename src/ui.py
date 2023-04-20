@@ -284,7 +284,7 @@ class UserInterface:
                 setting = int(days)
             self.FORECAST_SPAN = setting
             self.update_settings()
-            print(f"Forecast span set to {days} days!")
+            print(f"Forecast span set to {setting} days!")
         else:
             print("Number of days must be a number!")
 
