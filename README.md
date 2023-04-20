@@ -1,5 +1,13 @@
 # Introduction
+The application provides means to get a weather forecast or current temperature and weather conditions in any city on the planet,
+as long as the API that I am using to get the data from, covers that city in their database. 
 # Preparation
+## Finding an API
+I had to find an online API that meets the following requirements:
+1. It is a free online API
+2. It allows to choose the name of a city, instead of longitute and latitude coordinates
+I read some reviews and narrowed it down to [Weather-API](https://www.weatherapi.com/)
+I registered myself with the provider of the API and received an API-key.
 # ISSUES
 ## Migration to a different repository
 I started working on the Project as sson as I learned the most basic things about Python. So I manually created a repository on GitHub
