@@ -35,7 +35,7 @@ class TextTable:
             self.add_hours_column()
         self.add_forecast_columns(response_info, forecast_mode)
         # Print the table in green on a white background
-        print(Fore.GREEN + Back.WHITE + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
+        print(Fore.GREEN + Style.BRIGHT + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
         # Add three lines after the table to add some space separation between it and the next lines
         print("\n\n\n")
 
@@ -69,7 +69,7 @@ class TextTable:
             self.table[self.current_row].append(data)
             # Next row in the table
             self.next_row()
-        print(Fore.GREEN + Back.WHITE + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
+        print(Fore.GREEN + Style.BRIGHT + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
 
     def add_hours_column(self):
         for row in range(25):
@@ -148,7 +148,7 @@ class UserInterface:
         table[0] = ["CURRENT DATE: ", "CURRENT TEMPERATURE: ", "CONDITION:"]
         table.append([])
         table[1] = [curr_date, curr_temp, condition]
-        print(Fore.GREEN + Back.WHITE + tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
+        print(Fore.GREEN + Style.BRIGHT + tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
         # Add some extra space after the table to speparate it from next lines
         print("\n\n\n")
 
