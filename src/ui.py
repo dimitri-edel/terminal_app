@@ -331,26 +331,29 @@ class UserInterface:
 
     def print_switchboard(self):
         swtich_board = []
+        headers_colors = f"{Back.BLACK}{Fore.YELLOW}{Style.BRIGHT}"
+        cell_colors = f"{Back.BLUE}{Fore.WHITE}{Style.BRIGHT}"
+        command_colors = f"{Fore.GREEN}{Style.BRIGHT}{Back.BLACK}"
         # swtich_board.append([])
         # swtich_board[0] = ["desc_fmRIPTION", "COMMAND"]
-        swtich_board.append(["DESCRIPTION", "COMMAND"])
+        swtich_board.append([f"{headers_colors}DESCRIPTION{cell_colors}", f"{headers_colors}COMMAND{cell_colors}"])
         # description string of the forecast command
         desc_forecast = """Show the forcast for the number of days,
         defined in the settings.Default is 3 days,
         and temperature unit defaults to Fahreinheit!"""
         # remove indentations from the multiline string
         dedent_forecast = "\n".join([m.lstrip() for m in desc_forecast.split("\n")])
-        swtich_board.append([dedent_forecast, "forecast"])
-        swtich_board.append(["Show the forcast for today", "today"])
-        swtich_board.append(["Current weather", "current"])
-        swtich_board.append(["Set the temperature unit[Celcius/Fahrenheit]", "set tu"])
+        swtich_board.append([dedent_forecast, f"{command_colors}forecast{cell_colors}"])
+        swtich_board.append(["Show the forcast for today", f"{command_colors}today{cell_colors}"])
+        swtich_board.append(["Current weather", f"{command_colors}current{cell_colors}"])
+        swtich_board.append(["Set the temperature unit[Celcius/Fahrenheit]", f"{command_colors}set tu{cell_colors}"])
         # description of the set temerature unit command
         desc_tu = """Set the span of a forecast.
         How many days to cover?
         Maximum is 4!"""
         # remove indentations from the multiline string
         dedent_tu = "\n".join([m.lstrip() for m in desc_tu.split("\n")])
-        swtich_board.append([dedent_tu, "set fs"])
+        swtich_board.append([dedent_tu, f"{command_colors}set fs{cell_colors}"])
         # description of the set forecast mode command
         desc_fm = """Set forecast mode. It lets you choose between hourly
         and average temperatures. If set to hourly,
@@ -360,16 +363,17 @@ class UserInterface:
         of each day."""
         # remove indentations from the multiline string
         dedent_fm = "\n".join([m.lstrip() for m in desc_fm.split("\n")])
-        swtich_board.append([dedent_fm, "set fm"])
+        swtich_board.append([dedent_fm, f"{command_colors}set fm{cell_colors}"])
         # description of the city command
         desc_city = """Set name of the city for for which you want
         the forecast to be. If not set, the setting
         defaults to 'Austin, TX, USA'."""
         # remove indentations from the multiline string
         dedent_city = "\n".join([m.lstrip() for m in desc_city.split("\n")])
-        swtich_board.append([dedent_city, "city"])
-        swtich_board.append(["Exit", "exit"])
-        print(Back.BLUE + Fore.WHITE + Style.BRIGHT + tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
+        swtich_board.append([dedent_city, f"{command_colors}city{cell_colors}"])
+        swtich_board.append(["Exit", f"{command_colors}exit{cell_colors}"])
+        # print(Back.BLUE + Fore.WHITE + Style.BRIGHT + tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
+        print(cell_colors + tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
 
     def clear_screen(self):
         os.system("cls" if os.name == "nt" else "clear")
