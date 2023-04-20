@@ -6,6 +6,7 @@ from src.api import RequestInfo, RequestParameters
 from src.config import Configuration as conf
 import src.json_file as jsn
 
+
 class TextTable:
     def __init__(self, rows) -> None:
         self.rows = rows
@@ -26,7 +27,7 @@ class TextTable:
 
     def reset_row(self):
         self.current_row = 0
-    
+
     def print_forecast(self, response_info, forecast_mode):
         if forecast_mode == "hourly":
             self.add_hours_column()
@@ -35,7 +36,9 @@ class TextTable:
 
     def print_todays_forecast(self, response_info, forecast_mode):
         # start with the current hour
-        start_index = datetime.datetime.now().hour - 1 if datetime.datetime.now().hour > 0 else 0
+        start_index = (
+            datetime.datetime.now().hour - 1 if datetime.datetime.now().hour > 0 else 0
+        )
         # This is the index of the row within the table
         self.reset_row()
         for i in range(start_index, 24, 1):
@@ -49,14 +52,18 @@ class TextTable:
         # Reset the index of the row within the table
         self.reset_row()
         # Index in the response_table object
-        response_table_index = 0 # The forecast for today will only contain this one entry
-        self.table[self.current_row].append(f"DATE: {response_info.response_table[response_table_index]['date']}")
+        response_table_index = (
+            0  # The forecast for today will only contain this one entry
+        )
+        self.table[self.current_row].append(
+            f"DATE: {response_info.response_table[response_table_index]['date']}"
+        )
         # Now append the rows with data to the column
         for i in range(start_index, 24, 1):
-           data =  response_info.response_table[response_table_index]["hourly"][i]
-           self.table[self.current_row].append(data)
-           # Next row in the table
-           self.next_row()
+            data = response_info.response_table[response_table_index]["hourly"][i]
+            self.table[self.current_row].append(data)
+            # Next row in the table
+            self.next_row()
         print(tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
 
     def add_hours_column(self):
@@ -69,20 +76,31 @@ class TextTable:
                 self.table[row].append(str(row) + ":00")
 
     def add_forecast_columns(self, response_info, forecast_mode):
-         for response_table_index in range(len(response_info.response_table)):
+        for response_table_index in range(len(response_info.response_table)):
             # Reset the current_row within the table
             self.reset_row()
-            self.table[self.current_row].append(str(response_info.response_table[response_table_index]["date"]))
+            self.table[self.current_row].append(
+                str(response_info.response_table[response_table_index]["date"])
+            )
             # Go to the next row
             self.next_row()
             if forecast_mode == "hourly":
-                for hourly in response_info.response_table[response_table_index]["hourly"]:
-                    self.table[self.current_row].append(hourly)
+                for hourly in response_info.response_table[response_table_index][
+                    "hourly"
+                ]:
+                    # Make the column narrower by replacing spaces with new lines
+                    txt_hourly = hourly.replace(" ", "\n")
+                    self.table[self.current_row].append(txt_hourly)
                     # Go to the next entry
                     self.next_row()
             else:
-                entry_text = f"{response_info.response_table[response_table_index]['avg_temp']} {response_info.response_table[response_table_index]['condition']}"
-                self.table[self.current_row].append(entry_text)
+                entry_text = f"""{response_info.response_table[response_table_index]['avg_temp']}
+                {response_info.response_table[response_table_index]['condition']}"""
+                # Remove indentations from the multi line string
+                dedent_text = "\n".join([m.lstrip() for m in entry_text.split("\n")])
+                # Replace white spaces with new lines to make the text narrower
+                rows_text = dedent_text.replace(" ", "\n")
+                self.table[self.current_row].append(rows_text)
                 # Go to the next entry
                 self.next_row()
 
@@ -109,18 +127,22 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
         # Extract the response, received from the API
         try:
-            res = info.get_response(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
+            res = info.get_response(
+                self.TEMPERATURE_UNIT,
+                forecast_mode=self.FORECAST_MODE,
+                forecast_span=self.FORECAST_SPAN,
+            )
         except Exception as e:
             print(e)
             return
 
-        curr_temp = str(res.response_table[0]["current_temperature"])        
+        curr_temp = str(res.response_table[0]["current_temperature"])
         curr_date = str(res.response_table[0]["date"])
         condition = str(res.response_table[0]["condition"])
         table.append([])
         table[0] = ["CURRENT DATE: ", "CURRENT TEMPERATURE: ", "CONDITION:"]
         table.append([])
-        table[1] = [curr_date, curr_temp, condition]        
+        table[1] = [curr_date, curr_temp, condition]
         print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
 
     """Print the forecast for the current day """
@@ -128,12 +150,16 @@ class UserInterface:
     def print_todays_forecast(self):
         parameters = RequestParameters(number_of_days=1, city=self.NAME_OF_CITY)
         info = RequestInfo(parameters=parameters)
-        
+
         try:
-            res = info.get_response(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
+            res = info.get_response(
+                self.TEMPERATURE_UNIT,
+                forecast_mode=self.FORECAST_MODE,
+                forecast_span=self.FORECAST_SPAN,
+            )
         except Exception as e:
             print(e)
-            return        
+            return
         # For table with average temperatures use 2 rows
         if self.FORECAST_MODE == "average":
             t = TextTable(2)
@@ -154,7 +180,11 @@ class UserInterface:
         info = RequestInfo(parameters=parameters)
 
         try:
-            res = info.get_response(self.TEMPERATURE_UNIT, forecast_mode=self.FORECAST_MODE, forecast_span=self.FORECAST_SPAN)
+            res = info.get_response(
+                self.TEMPERATURE_UNIT,
+                forecast_mode=self.FORECAST_MODE,
+                forecast_span=self.FORECAST_SPAN,
+            )
         except Exception as e:
             print(e)
             return
@@ -174,7 +204,7 @@ class UserInterface:
                     hour += 1
             # next teble
             table_index += 1
-       
+
         # For table with average temperatures use 2 rows
         if self.FORECAST_MODE == "average":
             t = TextTable(2)
@@ -228,7 +258,6 @@ class UserInterface:
             self.set_forecast_mode()
         else:
             print(f"The command '{_input}' is not defined!")
-    
 
     # Set the preferred temperature unit
     # User can choose between Fahrenheit and Celcius
@@ -248,9 +277,9 @@ class UserInterface:
         days = input("Enter number of days: ")
         setting = 0
         if days.isnumeric():
-            if int(days) > 7:
-                setting = 7
-                print("Maximum span is 7 days, current setting is now 7 days!")
+            if int(days) > 4:
+                setting = 4
+                print("Maximum span is 4 days, current setting is now 4 days!")
             else:
                 setting = int(days)
             self.FORECAST_SPAN = setting
@@ -268,7 +297,7 @@ class UserInterface:
     def set_forecast_mode(self):
         fm = input("Enter forecast mode: [AVG | HLY]?")
         if fm.lower() == "avg":
-            self.FORECAST_MODE = "average"            
+            self.FORECAST_MODE = "average"
         elif fm.lower() == "hly":
             self.FORECAST_MODE = "hourly"
         else:
@@ -277,7 +306,9 @@ class UserInterface:
 
     def update_settings(self):
         conf().update_settings(
-            temp_unit=self.TEMPERATURE_UNIT, forecast_span=self.FORECAST_SPAN, name_of_city=self.NAME_OF_CITY
+            temp_unit=self.TEMPERATURE_UNIT,
+            forecast_span=self.FORECAST_SPAN,
+            name_of_city=self.NAME_OF_CITY,
         )
         print("Settings have been updated!")
 
@@ -291,14 +322,14 @@ class UserInterface:
     def print_switchboard(self):
         swtich_board = []
         # swtich_board.append([])
-        # swtich_board[0] = ["desc_fmRIPTION", "COMMAND"]        
+        # swtich_board[0] = ["desc_fmRIPTION", "COMMAND"]
         swtich_board.append(["DESCRIPTION", "COMMAND"])
         # description string of the forecast command
         desc_forecast = """Show the forcast for the number of days,
         defined in the settings.Default is 3 days,
         and temperature unit defaults to Fahreinheit!"""
         # remove indentations from the multiline string
-        dedent_forecast = '\n'.join([m.lstrip() for m in desc_forecast.split('\n')])
+        dedent_forecast = "\n".join([m.lstrip() for m in desc_forecast.split("\n")])
         swtich_board.append([dedent_forecast, "forecast"])
         swtich_board.append(["Show the forcast for today", "today"])
         swtich_board.append(["Current weather", "current"])
@@ -306,26 +337,26 @@ class UserInterface:
         # description of the set temerature unit command
         desc_tu = """Set the span of a forecast.
         How many days to cover?
-        Maximum is 7!"""
+        Maximum is 4!"""
         # remove indentations from the multiline string
-        dedent_tu = '\n'.join([m.lstrip() for m in desc_tu.split('\n')])
-        swtich_board.append([dedent_tu,"set fs"])
+        dedent_tu = "\n".join([m.lstrip() for m in desc_tu.split("\n")])
+        swtich_board.append([dedent_tu, "set fs"])
         # description of the set forecast mode command
-        desc_fm = '''Set forecast mode. It lets you choose between hourly
+        desc_fm = """Set forecast mode. It lets you choose between hourly
         and average temperatures. If set to hourly,
         forecast for every hour of each day will
         be displayed. If set to average, forecast
         will only display the average temperature
-        of each day.'''
+        of each day."""
         # remove indentations from the multiline string
-        dedent_fm = '\n'.join([m.lstrip() for m in desc_fm.split('\n')])
+        dedent_fm = "\n".join([m.lstrip() for m in desc_fm.split("\n")])
         swtich_board.append([dedent_fm, "set fm"])
         # description of the city command
         desc_city = """Set name of the city for for which you want
         the forecast to be. If not set, the setting
         defaults to 'Austin, TX, USA'."""
         # remove indentations from the multiline string
-        dedent_city = '\n'.join([m.lstrip() for m in desc_city.split('\n')])
+        dedent_city = "\n".join([m.lstrip() for m in desc_city.split("\n")])
         swtich_board.append([dedent_city, "city"])
         swtich_board.append(["Exit", "exit"])
         print(tabulate(swtich_board, headers="firstrow", tablefmt="grid"))

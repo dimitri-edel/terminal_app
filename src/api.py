@@ -91,7 +91,7 @@ class RequestInfo:
                 # If the forecast_mode is set to 'average', then copy relevant data
                 # to response.response_table and skip the hourly forecast
             if forecast_mode == "average":
-                # Weather condition text
+                # Weather condition text                
                 condition = day_info["day"]["condition"]["text"]
                 # avaerage temperature
                 avg_temp = (
