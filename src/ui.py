@@ -2,6 +2,8 @@ import os  # import operating system routines
 from tabulate import tabulate  # needs pip install tablulate
 
 import datetime
+import colorama
+from colorama import Fore, Back, Style
 from src.api import RequestInfo, RequestParameters
 from src.config import Configuration as conf
 import src.json_file as jsn
@@ -32,7 +34,10 @@ class TextTable:
         if forecast_mode == "hourly":
             self.add_hours_column()
         self.add_forecast_columns(response_info, forecast_mode)
-        print(tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
+        # Print the table in green on a white background
+        print(Fore.GREEN + Back.WHITE + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
+        # Add three lines after the table to add some space separation between it and the next lines
+        print("\n\n\n")
 
     def print_todays_forecast(self, response_info, forecast_mode):
         # start with the current hour
@@ -64,7 +69,7 @@ class TextTable:
             self.table[self.current_row].append(data)
             # Next row in the table
             self.next_row()
-        print(tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
+        print(Fore.GREEN + Back.WHITE + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
 
     def add_hours_column(self):
         for row in range(25):
@@ -133,7 +138,7 @@ class UserInterface:
                 forecast_span=self.FORECAST_SPAN,
             )
         except Exception as e:
-            print(e)
+            print(f"{Fore.RED}{Back.WHITE}{e}")
             return
 
         curr_temp = str(res.response_table[0]["current_temperature"])
@@ -143,7 +148,9 @@ class UserInterface:
         table[0] = ["CURRENT DATE: ", "CURRENT TEMPERATURE: ", "CONDITION:"]
         table.append([])
         table[1] = [curr_date, curr_temp, condition]
-        print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
+        print(Fore.GREEN + Back.WHITE + tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
+        # Add some extra space after the table to speparate it from next lines
+        print("\n\n\n")
 
     """Print the forecast for the current day """
 
@@ -213,12 +220,10 @@ class UserInterface:
             t = TextTable(25)
         t.print_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
 
-    # def printTable(self):
-    #     table = TextTable(2)
-    #     table.printTable()
-
     # Starting point
     def main(self):
+        # Initialize colorama and set it to autoreset upon every print statement
+        colorama.init(autoreset=True)
         self.get_settings()
         # Clear the screen when starting up
         self.clear_screen()
@@ -229,7 +234,8 @@ class UserInterface:
 
     def get_user_input(self):
         self.print_switchboard()
-        _input = input("Enter command:")
+        print(Fore.BLUE + Style.BRIGHT + Back.WHITE + "Enter command:")
+        _input = input()
         if _input.lower() == "exit":
             self.EXIT = True
         elif _input.lower() == "today":
@@ -257,7 +263,7 @@ class UserInterface:
             self.clear_screen()
             self.set_forecast_mode()
         else:
-            print(f"The command '{_input}' is not defined!")
+            print(Fore.RED + Back.WHITE + f"The command '{_input}' is not defined!")
 
     # Set the preferred temperature unit
     # User can choose between Fahrenheit and Celcius
@@ -271,38 +277,41 @@ class UserInterface:
             else:
                 print("Temperature Unit set to Fahrenheit!")
         else:
-            print("You can only put F for Fahrenheit or C for Celicius!")
+            print(Fore.RED + Back.WHITE +"You can only put F for Fahrenheit or C for Celicius!")
 
     def set_forecast_span(self):
-        days = input("Enter number of days: ")
+        print(Fore.BLUE + Style.BRIGHT + Back.WHITE + "Enter number of days: ")
+        days = input()
         setting = 0
         if days.isnumeric():
             if int(days) > 4:
                 setting = 4
-                print("Maximum span is 4 days, current setting is now 4 days!")
+                print(Fore.RED + Back.WHITE +"Maximum span is 4 days, current setting is now 4 days!")
             else:
                 setting = int(days)
             self.FORECAST_SPAN = setting
             self.update_settings()
-            print(f"Forecast span set to {setting} days!")
+            print(f"{Fore.CYAN}{Style.BRIGHT}Forecast span set to {setting} days!")
         else:
-            print("Number of days must be a number!")
+            print(Fore.RED + Back.WHITE +"Number of days must be a number!")
 
     def set_name_of_city(self):
-        city = input("Enter name of city:")
+        print(Fore.BLUE + Style.BRIGHT + Back.WHITE + "Enter name of city:")
+        city = input()
         self.NAME_OF_CITY = city.capitalize()
         self.update_settings()
-        print(f"Name of city set to {city.capitalize()}")
+        print(f"{Fore.CYAN}{Style.BRIGHT} Name of city set to {city.capitalize()}")
 
     def set_forecast_mode(self):
-        fm = input("Enter forecast mode: [AVG | HLY]?")
+        print(Fore.BLUE + Style.BRIGHT + Back.WHITE + "Enter forecast mode: [AVG | HLY]?")
+        fm = input()
         if fm.lower() == "avg":
             self.FORECAST_MODE = "average"
         elif fm.lower() == "hly":
             self.FORECAST_MODE = "hourly"
         else:
-            print("The only options are : AVG and HLY !")
-        print(f"Current forecast mode: {self.FORECAST_MODE}")
+            print(Fore.RED + Back.WHITE +"The only options are : AVG and HLY !")
+        print(f"{Fore.CYAN}{Style.BRIGHT}Current forecast mode: {self.FORECAST_MODE}")
 
     def update_settings(self):
         conf().update_settings(
@@ -359,7 +368,7 @@ class UserInterface:
         dedent_city = "\n".join([m.lstrip() for m in desc_city.split("\n")])
         swtich_board.append([dedent_city, "city"])
         swtich_board.append(["Exit", "exit"])
-        print(tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
+        print(Back.BLUE + Fore.WHITE + Style.BRIGHT + tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
 
     def clear_screen(self):
         os.system("cls" if os.name == "nt" else "clear")
