@@ -91,7 +91,7 @@ class UserInterface:
     def __init__(self) -> None:
         self.EXIT = False
         # Number of days to be convered in the forecast
-        self.FORECAST_SPAN = 7
+        self.FORECAST_SPAN = 3
         # Which temperature unit should be displayed
         self.TEMPERATURE_UNIT = "f"
         self.NAME_OF_CITY = "Austin"
@@ -294,7 +294,7 @@ class UserInterface:
         # swtich_board[0] = ["DESCRIPTION", "COMMAND"]        
         swtich_board.append(["DESCRIPTION", "COMMAND"])
         swtich_board.append([
-            "Show the forcast for the number of days, defined in the settings. \nDefault is 7 days, and temperature unit defaults to Fahreinheit!",
+            "Show the forcast for the number of days, defined in the settings. \nDefault is 3 days, and temperature unit defaults to Fahreinheit!",
             "forecast",
         ])
         swtich_board.append(["Show the forcast for today", "today"])
