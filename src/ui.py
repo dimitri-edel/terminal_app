@@ -234,7 +234,7 @@ class UserInterface:
 
     def get_user_input(self):
         self.print_switchboard()
-        print(Fore.BLUE + Style.BRIGHT + Back.WHITE + "Enter command:")
+        print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter command:")
         _input = input()
         if _input.lower() == "exit":
             self.EXIT = True
@@ -269,18 +269,19 @@ class UserInterface:
     # User can choose between Fahrenheit and Celcius
 
     def set_temperature_unit(self):
-        unit = input("Enter temperature unit [ F / C ] :")
+        print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter temperature unit [ F / C ] :")
+        unit = input()
         if unit.lower() == "f" or unit.lower() == "c":
             self.TEMPERATURE_UNIT = unit
             if unit.lower() == "c":
-                print("Temperature Unit set to Celcius!")
+                print(Fore.CYAN + Style.BRIGHT + "Temperature Unit set to Celcius!")
             else:
-                print("Temperature Unit set to Fahrenheit!")
+                print(Fore.CYAN + Style.BRIGHT + "Temperature Unit set to Fahrenheit!")
         else:
             print(Fore.RED + Back.WHITE +"You can only put F for Fahrenheit or C for Celicius!")
 
     def set_forecast_span(self):
-        print(Fore.BLUE + Style.BRIGHT + Back.WHITE + "Enter number of days: ")
+        print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter number of days: ")
         days = input()
         setting = 0
         if days.isnumeric():
@@ -296,14 +297,14 @@ class UserInterface:
             print(Fore.RED + Back.WHITE +"Number of days must be a number!")
 
     def set_name_of_city(self):
-        print(Fore.BLUE + Style.BRIGHT + Back.WHITE + "Enter name of city:")
+        print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter name of city:")
         city = input()
         self.NAME_OF_CITY = city.capitalize()
         self.update_settings()
         print(f"{Fore.CYAN}{Style.BRIGHT} Name of city set to {city.capitalize()}")
 
     def set_forecast_mode(self):
-        print(Fore.BLUE + Style.BRIGHT + Back.WHITE + "Enter forecast mode: [AVG | HLY]?")
+        print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter forecast mode: [AVG | HLY]?")
         fm = input()
         if fm.lower() == "avg":
             self.FORECAST_MODE = "average"

@@ -1,5 +1,6 @@
 # Introduction
 # Preparation
+# ISSUES
 # User stories
 # Design
 # Features
@@ -9,9 +10,6 @@
 ### Flow chart
 ## Folder structure
 ## BUGS
-# Testing
-## HTML, CSS, JAVASCRIPT
-## Python
 # Technologies
 ## Languages
 ### Python
