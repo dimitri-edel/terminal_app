@@ -52,16 +52,16 @@ class RequestInfo:
             raise Exception(json_obj["error"]["message"] + additional_text)
 
         # Extract information from the dictionary named 'current' and put it in response objec
-        self.extract_current_weather(json_obj, response, temperature_unit)
+        self.__extract_current_weather(json_obj, response, temperature_unit)
         # Find dictionary named 'forecastday', and copy relevant data to response.response_table
         # The 'forecastday' dictionary is nested inside the second level of a multidimensional dictionary
         # First level contains three objects in total: 'location', 'current', 'forecast'
 
-        self.extract_forecast(json_obj, response, forecast_mode, temperature_unit, forecast_span)
+        self.__extract_forecast(json_obj, response, forecast_mode, temperature_unit, forecast_span)
 
         return response
 
-    def extract_current_weather(self, json_obj, response, temperature_unit):
+    def __extract_current_weather(self, json_obj, response, temperature_unit):
         # The index of the first list in response.response_table. It always contains
         # information on the current day
         current_day_index = 0
@@ -72,20 +72,20 @@ class RequestInfo:
         response.response_table[current_day_index][
             "current_temperature"
         ] = current_temperature
-        response.response_table[current_day_index]["date"] = self.extract_date(
+        response.response_table[current_day_index]["date"] = self.__extract_date(
             json_obj["location"]["localtime"]
         )
         response.response_table[current_day_index]["condition"] = json_obj["current"]["condition"]["text"]
 
-    def extract_forecast(self, json_obj, response, forecast_mode, temperature_unit, forecast_span):
+    def __extract_forecast(self, json_obj, response, forecast_mode, temperature_unit, forecast_span):
         # Day index is used for
         day_index = 0
         for day_info in json_obj["forecast"]["forecastday"]:
-            # The date for the first day has already been added by extract_current_weather(),
+            # The date for the first day has already been added by __extract_current_weather(),
             # to the first element, so skip the first entry
             if day_index > 0:
                 # Extract date from the timestamp in the json_obj
-                date = self.extract_date(day_info["date"])
+                date = self.__extract_date(day_info["date"])
                 # add date of the current element to response
                 response.response_table[day_index]["date"] = date
                 # If the forecast_mode is set to 'average', then copy relevant data
@@ -114,7 +114,7 @@ class RequestInfo:
                     continue
 
             # add hourly report for the current element to respoonse
-            self.extract_hourly_forecast(
+            self.__extract_hourly_forecast(
                 response, temperature_unit, day_index, day_info
             )
             # Increment the current element index
@@ -126,7 +126,7 @@ class RequestInfo:
                 # Add another dictionary to the list in the response
                 response.next_day()
 
-    def extract_hourly_forecast(self, response, temperature_unit, day_index, day_info):
+    def __extract_hourly_forecast(self, response, temperature_unit, day_index, day_info):
         # Sometimes the api delivers further hours for the night time, in which case the number of
         # entries in the hourly list exceeds 24 entries.
         # hourly_count counts the number of entries and is used to ensure that only 24 entries are
@@ -148,7 +148,7 @@ class RequestInfo:
                     f"{hourly['temp_c']}°{temperature_unit.upper()} {hourly['condition']['text']}"
                 )
 
-    def extract_date(self, timestamp):
+    def __extract_date(self, timestamp):
         """Extracts the date from a timestamp
 
 
@@ -165,18 +165,18 @@ class RequestInfo:
         data_day = int(data_split[2])
         date_obj = date(data_year, data_month, data_day)
         date_as_str = ""
-        data_weekday = self.get_name_of_weekday(date_obj)
+        data_weekday = self.__get_name_of_weekday(date_obj)
         date_as_str = (
-            data_weekday + " " + str(data_day) + "." + self.get_name_of_month(data_month - 1)
+            data_weekday + " " + str(data_day) + "." + self.__get_name_of_month(data_month - 1)
         )
 
         return date_as_str
 
-    def get_name_of_weekday(self, date):
+    def __get_name_of_weekday(self, date):
         weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         return weekdays[date.weekday()]
 
-    def get_name_of_month(self, month_as_int):
+    def __get_name_of_month(self, month_as_int):
         months = [
             "Jan",
             "Feb",
