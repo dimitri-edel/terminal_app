@@ -124,7 +124,19 @@ If yoou enter a letter that does not represent Celcius or Fahrenheit. You will s
 # Code
 ## OOD
 ### Class diagram
-### Flow chart
+![Class diagram image](documentation/img/class-diagram.png)
+#### Flow
+The script **run.py** merely instantiates an object of type UserInterface and executes its main()-method. UserInterface is the crossroads where users input is evaluated and an according response is triggered, which happens in the method get_user_input().
+#### TextTable class
+This is simply a wrapper class for the functions provided by library named **tabulate**. Tabulate provides an easy way to print tables on the terminal. In order for this to happen the tabulate methods use a list, that has to comply with certain rules. This list is the property in the TextTable class named table.
+#### Configuration class
+This class handles writing and reading the **settings.sf** file that lives in the the **conf** folder.
+#### RequestInfo class
+The class handles HTTP request and response objects. It contains the settings for the API and so on. It sends a request to the API and then extracts data from the response, which comes back in form a JSON file. It turns the JSON file into a Paython dictionary and then parses through the dictionary collecting relevant information and putting it in a dictionary named **response_table** that sits in an object of type **ResponseInfo**.  All of that happens inside get_response() method, which returns an object of type **ResponseInfo**.
+#### ResponseInfo class
+Contains requested information inside **response_table**
+#### RequestParameters class
+Well, the name speaks for itself. It is used for passing parameters to the constructor of RequestInfo. I have only created this class just in case I were to decide to implement other types of requests to the API. For the time beeing, it only ecapsulates two parameters.
 ## BUGS
 ### API sometimes delivers more datasets than expected
 A nasty bug found its way into my work today. The API started to deliver more hourly reports per day than the usual 24 hours.
@@ -152,6 +164,13 @@ If someone wants to use it on their local machine, they would have to copy the f
 ### Special request
 If you intend to use it on your computer, then **PLEASE**  get an **API KEY** for yourself! It is **easy** to do. You only need to sign up at [Weather-API website](https://www.weatherapi.com/). All you need to provide is a valid **email-address** and **it does not cost a thing**. Then just copy the **API-key** into to the constructor of the class named **RequestInfo** in **api.py**. The name of the property in the constructor is **API_KEY**.
 ## Heroku
+Before deploying the webapplication to Heroku, it is mandatory to compile a list of imports in the requirements.txt. Which the Heroku deployment script will use for setting up the environment. To do so, I just typed a pip command in the terminal <code>pip3 freeze > requirements.txt</doce>
+Next step is creating an account on Heroku. 
+Once registered with Heroku, I went to the dashboard and created a new App.
+Then I opened the App and went to the settings panel. Here it is necessary to set up a couple of configuration variables. One of them is PORT number must be set to 8000. 
+Furthermore, I had to **Add buildpack**. First of all, the application runs on Python so this msut be added to the buildpack. Secondly, the application uses Node.js to emulate the terminal window. Node.js must be added to the pack as well. The order in which these dependencies are added to the pack do matter: 1. Python, 2.Node.js
+Now comes the deployment part. I simply clicked on deploy on the dashboard. Then I had to connect to GitHub, which is easily clicking on the GitHub button that would appear as soon as I opened the Deploy window. Then I just followed the instructions. 
+Lastly, I used the deploy from branch option to launch the site on Heroku. It only takes about a minute for the deployment script to start it up. One can see, in a litle window, all the messsages from the server as it is running through the script. As soon as it was fiinshed I saw a button labeled as **View**. I clicked on it and it opened the website. 
 
 # Credits
 ## Code Institute

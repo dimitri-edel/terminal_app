@@ -14,8 +14,7 @@ class TextTable:
     # Contructor will create a table with the number of rows 
     # stated in the parameter
         self.rows = rows
-        self.current_row = 0
-        self.current_column = 0
+        self.current_row = 0        
         self.table = []
         # Create a list with as many rows as stated in the parameter
         for i in range(rows):
@@ -25,22 +24,14 @@ class TextTable:
         # Used, as an option, for navigating through the rows in a loop
         self.current_row += 1
 
-    def next_column(self):
-        # Used, as an option, for navigation through the columns in a loop
-        self.current_column += 1
-
-    def reset_column(self):
-        # Used, as an option, for navigation through the columns in a loop
-        self.current_column = 0
-
     def reset_row(self):
         # Used, as an option, for navigating through the rows in a loop
         self.current_row = 0
 
     def print_forecast(self, response_info, forecast_mode):
         if forecast_mode == "hourly":
-            self.add_hours_column()
-        self.add_forecast_columns(response_info, forecast_mode)
+            self.__add_hours_columns()
+        self.__add_forecast_columns(response_info, forecast_mode)
         # Print the table in green on a white background
         print(
             Fore.GREEN
@@ -104,7 +95,7 @@ class TextTable:
             + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid")
         )
 
-    def add_hours_column(self):
+    def __add_hours_columns(self):
     # Used for hourly forecast. The method appends the first column to the table
     # The column contains a header that reads TIME and 24 consequitive rows 
     # carring the hour like so hh:00
@@ -116,7 +107,7 @@ class TextTable:
             else:
                 self.table[row].append(str(row) + ":00")
 
-    def add_forecast_columns(self, response_info, forecast_mode):
+    def __add_forecast_columns(self, response_info, forecast_mode):
         for response_table_index in range(len(response_info.response_table)):
             # Reset the current_row within the table
             self.reset_row()
