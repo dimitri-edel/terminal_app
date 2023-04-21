@@ -54,10 +54,10 @@ Now you will see a message that lets you know what temperature unit you have jus
 
 ## Swtiching between forecast modes
 The script provides two forecast modes. One is the hourly forecast, which will give you estimated temperatures and condition for each hour of a day. The other one is average forecast mode, which will provide what temperatures and conditons you may expect on average for each day.
-To switch between the two modes enter **set fm**.
+To switch between the two modes enter **set fm**. Forecast mode will not be saved to the settings file. It remains set only as long as the script is running in the terminal.
 ![Set forecast mode image](documentation/img/set-fm.webp)
 
-Enter **avg** for average or **hly* for hourly.
+Enter **avg** for average or **hly** for hourly.
 ![Enter forecast mode image](documentation/img/enter-fm.webp)
 
 Upon entering the forecast mode you will see a message that lets you know which forecast mode has been set.
@@ -84,7 +84,7 @@ In the top row of the terminal yoou will see the current weather report.
 Enter **today**
 ![Today command image](documentation/img/today.webp)
 
-Now you can see a table with the forecast for the rest of the day, if you set the forecast mode to hourly using the **set fm** command. Forecast mode will not be saved to the settings file. It remains set only as long as the script is running in the terminal.
+Now you can see a table with the forecast for the rest of the day, if you set the forecast mode to hourly using the **set fm** command. 
 ![Today report image](documentation/img/today-report.webp)
 
 If you have set the forecast mode to average, then you will see a table that only shows the date and what kind of weather to expect on average thoughout the day.
@@ -141,10 +141,7 @@ Well, the name speaks for itself. It is used for passing parameters to the const
 ### API sometimes delivers more datasets than expected
 A nasty bug found its way into my work today. The API started to deliver more hourly reports per day than the usual 24 hours.
 This resulted in an index error in TextTable.addForecastColumns()-method, within the loop. The enty_index was getting out
-of range. Took me over an hour of debugging and wrecking my mind to finally pin down the problem. I have no idea as to 
-why the API started appending more hours, which technically belong in the dataset of the next day. However, I simply added
-two lines of code in the loop, which check if the number of datasets exceed 24 (as in 24 hours), then these datasets will be
-skipped.
+of range. Took me over an hour of debugging and wrecking my mind to finally pin down the problem, becasue the code seemed to be doing exactly what it was supposed to. I was recieving forecasts for seven days at the time, and only two of them exceeded 24 entries, which I first noticed when I had the length of each set printed on the terminal. It still took me a litle bit to realize, that it was not because of what I did during the refactoring a few minutes prior, but it was coming from the API itself. I have no idea as to why the API started appending more hours, which technically belong in the dataset of the next day. However, I simply added two lines of code in the loop, which check if the number of datasets exceeds 24 (as in 24 hours), then these datasets will be skipped. You will find the fix **@ line 143 of api.py**
 
 ### Can not get textwrapper.dedent() method to do what it is supposed to do
 The textwraper.dedent() method is not doing what it's supposed to. After applying it the text still appears indented in the
@@ -152,7 +149,7 @@ TextTable. Found this on stackoverflow.com <code> print('\n'.join([m.lstrip() fo
 I adjusted that to my code and it worked, the multi-line text appears without indentions.
 
 ### An empty dataset appears in the forecast table 
-The issue stemmed from a loop inside RequestInfo.__extract_forecast(). Solution, check if the execution araived at the end of the forcast and not execute response.nextDay(). You will find the fix **@ line: 127 of api.py**
+The issue stemmed from a loop inside RequestInfo.__extract_forecast(). Solution, check if the execution araived at the end of the forcast and not execute response.nextDay(). You will find the fix **@ line: 129 of api.py**
 # Technologies
 - GitHub
 - VS Code
@@ -160,7 +157,7 @@ The issue stemmed from a loop inside RequestInfo.__extract_forecast(). Solution,
 - Python
 # Deployment
 ## Local machine
-If someone wants to use it on their local machine, they would have to copy the folders **conf** and **src** and the file **run.py** to a folder of their choice and then execute **run.py** on their machine. 
+If someone wants to use it on their local machine, they would have to copy the folders **conf** and **src** and the files **run.py** and **requirements.txt**  to a folder of their choice. Then open that folder in a terminal (Command prompt on Windows) and type the following command <code>pip install -r requirements.txt</code>. The file **requirements.txt** contains a list of packages required to run the script. Lastly, execute **run.py** on their machine. 
 ### Special request
 If you intend to use it on your computer, then **PLEASE**  get an **API KEY** for yourself! It is **easy** to do. You only need to sign up at [Weather-API website](https://www.weatherapi.com/). All you need to provide is a valid **email-address** and **it does not cost a thing**. Then just copy the **API-key** into to the constructor of the class named **RequestInfo** in **api.py**. The name of the property in the constructor is **API_KEY**.
 ## Heroku
