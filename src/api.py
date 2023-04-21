@@ -45,11 +45,15 @@ class RequestInfo:
         x = requests.get(self.CURL)
         json_obj = x.json()
         # Day index in the response.response_table list
-        day = 0
+        # day = 0
         # If the response returns an error, then raise an exception
         if "error" in json_obj:
-            additional_text = "You might have misspelled the name of the city, or the city is not covered!"
-            raise Exception(json_obj["error"]["message"] + additional_text)
+            additional_text = f"""\nYou might have misspelled the name of the city, 
+            or the city is not covered! 
+            Requested city name was {self.QUERY}"""
+
+            dedent_text = "\n".join([m.lstrip() for m in additional_text.split("\n")])
+            raise Exception(json_obj["error"]["message"] + dedent_text)
 
         # Extract information from the dictionary named 'current' and put it in response objec
         self.__extract_current_weather(json_obj, response, temperature_unit)

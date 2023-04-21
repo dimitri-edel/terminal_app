@@ -20,21 +20,30 @@ There were only four commits in total and the intial source code. Here is the li
 [First repo](https://github.com/dimitri-edel/pp3.git)
 ## Size of the terminal
 At first I adjusted the size of the terminal in the index.html that came with the template. It allowed me to have more space and create
-larger tables, which could accomodate forecasts for up to seven days. Neither me, nor my mentor were sure about how the assemsment team
-would feel about me changing the files, which Code Institute warned us agains changing. So, later on I changed it back to the intial width
-of 80 columns.
+larger tables, which could accomodate forecasts for up to seven days, without making it look messy. Neither me, nor my mentor were sure 
+about how the assemsment team would feel about me changing the files, which Code Institute warned us agains changing. So, toward the end
+I changed it back to the intial width of 80 columns. It's like they say: 'Customer is King!'
 # User stories
-# Design
-# Features
+
 # Code
 ## OOD
 ### Class diagram
 ### Flow chart
-## Folder structure
 ## BUGS
 # Technologies
-## Languages
-### Python
-#### Python packages
+- GitHub
+- VS Code
+- Heroku
+- Python
 # Deployment
 # Credits
+## Code Institute
+Code Instititute provideed the tutorials on essential knowledge of Python.
+The template for the Heroku website and a step by step tutorial on how to deploy a project on Heroku was provided by the friendly team of Code Institute.
+## stackoverflow.com
+Provided solutions for a few problems, which I would not have been able to come up with on my own.
+## w3schools.com
+I oftentimes used this website, when I needed to quickly look how to use certain classes and functions in Python. It posed a great helper in additon to the tutorials by Code Institute.
+## My mentor Adegbenga Adeye
+Special thanks to my mentor for the help and support throughout the project!
+
