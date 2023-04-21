@@ -128,7 +128,7 @@ If yoou enter a letter that does not represent Celcius or Fahrenheit. You will s
 #### Flow
 The script **run.py** merely instantiates an object of type UserInterface and executes its main()-method. UserInterface is the crossroads where users input is evaluated and an according response is triggered, which happens in the method get_user_input().
 #### TextTable class
-This is simply a wrapper class for the functions provided by library named **tabulate**. Tabulate provides an easy way to print tables on the terminal. In order for this to happen the tabulate methods use a list, that has to comply with certain rules. This list is the property in the TextTable class named table.
+This is simply a wrapper class for the functions provided by library named **tabulate**. Tabulate provides an easy way to print tables on the terminal. In order for this to happen the tabulate methods use a list, that has to comply with certain rules. This list is a property of the TextTable class named **table**.
 #### Configuration class
 This class handles writing and reading the **settings.sf** file that lives in the the **conf** folder.
 #### RequestInfo class
