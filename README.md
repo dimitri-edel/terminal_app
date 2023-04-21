@@ -73,7 +73,6 @@ Enter a number between 1 and 3.
 Now you will see a message informing you about the change.
 ![Set forecast span message image](documentation/img/set-fm-msg.webp)
 
-
 ## Information on the current weather
 Enter **current** for current weather.
 ![Enter command current image](documentation/img/enter-current.webp)
@@ -85,8 +84,11 @@ In the top row of the terminal yoou will see the current weather report.
 Enter **today**
 ![Today command image](documentation/img/today.webp)
 
-Now you can see a table with the forecast for the rest of the day.
+Now you can see a table with the forecast for the rest of the day, if you set the forecast mode to hourly using the **set fm** command. Forecast mode will not be saved to the settings file. It remains set only as long as the script is running in the terminal.
 ![Today report image](documentation/img/today-report.webp)
+
+If you have set the forecast mode to average, then you will see a table that only shows the date and what kind of weather to expect on average thoughout the day.
+![Today average report](documentation/img/today-avg-msg.webp)
 
 ## Getting several days of the weather forecast
 Enter **forecast**
@@ -95,7 +97,29 @@ Enter **forecast**
 Now you can see a table with the forecast for the number of days that you have set using **set fs** command. The image below only illustrates a section of the actual table. The table you will see will cover 24 hours for each day.
 ![Forecast report image](documentation/img/forecast-report.webp)
 
+If you use **set fs** and set the forecast mode to **average**. Then you will see a table with data that sums up each day only showing what to expect on average throughout the day.
+![Forecast report average image](documentation/img/forecast-avg-report.webp)
+
 ## Entering invalid data
+### Invalid command
+If you enter an invalid command you will get an error message.
+![Command error image](documentation/img/command-error.webp)
+
+### City name is invalid
+If the name of the city is not covered by the API, or you somehow misspelled the name you will see a message if you issue any of the commands for retrieving data from the API.
+![City name error](documentation/img/city-name-error.webp)
+
+### Invalid forecast span
+If you enter a number that is less than one or greater than the Maximum, you will get a feedback as depicted in the image below. Furthermore, the script will use either 1, if the entered number is less than 1. Or it will use the maximum, which is three, if the number exceeds that Maximum.
+![Forecast span error image](documentation/img/fs-error.webp)
+
+### Invalid forecast mode
+If you enter an invalid forecast mode you will see a message that explains what happened and the forecast mode will be set to hourly.
+![Forecast mode error image](documentation/img/fm-error.webp)
+
+### Invalid temerature unit
+If yoou enter a letter that does not represent Celcius or Fahrenheit. You will see an error message.
+![Temperature unit error image](documentation/img/tu-error.webp)
 
 # Code
 ## OOD

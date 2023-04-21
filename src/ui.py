@@ -8,26 +8,33 @@ from src.api import RequestInfo, RequestParameters
 from src.config import Configuration as conf
 import src.json_file as jsn
 
-
 class TextTable:
+# The TextTable class uses tabulate to wrap data in a table    
     def __init__(self, rows) -> None:
+    # Contructor will create a table with the number of rows 
+    # stated in the parameter
         self.rows = rows
         self.current_row = 0
         self.current_column = 0
         self.table = []
+        # Create a list with as many rows as stated in the parameter
         for i in range(rows):
             self.table.append([])
 
     def next_row(self):
+        # Used, as an option, for navigating through the rows in a loop
         self.current_row += 1
 
     def next_column(self):
+        # Used, as an option, for navigation through the columns in a loop
         self.current_column += 1
 
     def reset_column(self):
+        # Used, as an option, for navigation through the columns in a loop
         self.current_column = 0
 
     def reset_row(self):
+        # Used, as an option, for navigating through the rows in a loop
         self.current_row = 0
 
     def print_forecast(self, response_info, forecast_mode):
@@ -35,11 +42,33 @@ class TextTable:
             self.add_hours_column()
         self.add_forecast_columns(response_info, forecast_mode)
         # Print the table in green on a white background
-        print(Fore.GREEN + Style.BRIGHT + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
+        print(
+            Fore.GREEN
+            + Style.BRIGHT
+            + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid")
+        )
         # Add three lines after the table to add some space separation between it and the next lines
         print("\n\n\n")
 
     def print_todays_forecast(self, response_info, forecast_mode):
+        # If forecast mode is set to average then show date, average temperature and condition
+        if forecast_mode == "average":
+            self.reset_row()
+            self.table[self.current_row].append(
+                f"{response_info.response_table[0]['date']}"
+            )
+            self.next_row()
+            txt_row = f"""{response_info.response_table[0]['avg_temp']}
+                {response_info.response_table[0]['condition']}"""""
+            dedent_row = "\n".join([m.lstrip() for m in txt_row.split("\n")])
+            self.table[self.current_row].append(dedent_row)
+            print(
+                Fore.GREEN
+                + Style.BRIGHT
+                + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid")
+            )
+            return
+
         # start with the current hour
         start_index = (
             datetime.datetime.now().hour - 1 if datetime.datetime.now().hour > 0 else 0
@@ -69,9 +98,16 @@ class TextTable:
             self.table[self.current_row].append(data)
             # Next row in the table
             self.next_row()
-        print(Fore.GREEN + Style.BRIGHT + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid"))
+        print(
+            Fore.GREEN
+            + Style.BRIGHT
+            + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid")
+        )
 
     def add_hours_column(self):
+    # Used for hourly forecast. The method appends the first column to the table
+    # The column contains a header that reads TIME and 24 consequitive rows 
+    # carring the hour like so hh:00
         for row in range(25):
             if row == 0:
                 self.table[row].append("TIME")
@@ -102,7 +138,7 @@ class TextTable:
                 entry_text = f"""{response_info.response_table[response_table_index]['avg_temp']}
                 {response_info.response_table[response_table_index]['condition']}"""
                 # Remove indentations from the multi line string
-                dedent_text = "\n".join([m.lstrip() for m in entry_text.split("\n")])                
+                dedent_text = "\n".join([m.lstrip() for m in entry_text.split("\n")])
                 self.table[self.current_row].append(dedent_text)
                 # Go to the next entry
                 self.next_row()
@@ -146,7 +182,11 @@ class UserInterface:
         table[0] = ["CURRENT DATE: ", "CURRENT TEMPERATURE: ", "CONDITION:"]
         table.append([])
         table[1] = [curr_date, curr_temp, condition]
-        print(Fore.GREEN + Style.BRIGHT + tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
+        print(
+            Fore.GREEN
+            + Style.BRIGHT
+            + tabulate(table, headers="firstrow", tablefmt="fancy_grid")
+        )
         # Add some extra space after the table to speparate it from next lines
         print("\n\n\n")
 
@@ -168,7 +208,8 @@ class UserInterface:
         # For table with average temperatures use 2 rows
         if self.FORECAST_MODE == "average":
             t = TextTable(2)
-            t.print_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
+            # t.print_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
+            t.print_todays_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
         # For table with an hourly forecast 25 rows
         else:
             # Number of rows depends on what time it is. 25 - hour , because it includes the current hour
@@ -191,7 +232,7 @@ class UserInterface:
                 forecast_span=self.FORECAST_SPAN,
             )
         except Exception as e:
-            print(e)
+            print(Fore.RED + Back.WHITE + str(e))
             return
 
         for index in range(len(res.response_table)):
@@ -267,7 +308,12 @@ class UserInterface:
     # User can choose between Fahrenheit and Celcius
 
     def set_temperature_unit(self):
-        print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter temperature unit [ F / C ] :")
+        print(
+            Fore.GREEN
+            + Style.BRIGHT
+            + Back.BLACK
+            + "Enter temperature unit [ F / C ] :"
+        )
         unit = input()
         if unit.lower() == "f" or unit.lower() == "c":
             self.TEMPERATURE_UNIT = unit
@@ -276,7 +322,11 @@ class UserInterface:
             else:
                 print(Fore.CYAN + Style.BRIGHT + "Temperature Unit set to Fahrenheit!")
         else:
-            print(Fore.RED + Back.WHITE +"You can only put F for Fahrenheit or C for Celicius!")
+            print(
+                Fore.RED
+                + Back.WHITE
+                + "You can only put F for Fahrenheit or C for Celicius!"
+            )
 
     def set_forecast_span(self):
         print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter number of days: ")
@@ -285,17 +335,25 @@ class UserInterface:
         if days.isnumeric():
             if int(days) > 3:
                 setting = 3
-                print(Fore.RED + Back.WHITE +"Maximum span is 3 days, current setting is now 3 days!")
-            elif int(day) < 1:
+                print(
+                    Fore.RED
+                    + Back.WHITE
+                    + "Maximum span is 3 days, current setting is now 3 days!"
+                )
+            elif int(days) < 1:
                 setting = 1
-                print(Fore.RED + Back.WHITE +"Minimum is 1 day, current setting is now 1 day!")
+                print(
+                    Fore.RED
+                    + Back.WHITE
+                    + "Minimum is 1 day, current setting is now 1 day!"
+                )
             else:
                 setting = int(days)
             self.FORECAST_SPAN = setting
             self.update_settings()
             print(f"{Fore.CYAN}{Style.BRIGHT}Forecast span set to {setting} days!")
         else:
-            print(Fore.RED + Back.WHITE +"Number of days must be a number!")
+            print(Fore.RED + Back.WHITE + "Number of days must be a number!")
 
     def set_name_of_city(self):
         print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter name of city:")
@@ -305,14 +363,16 @@ class UserInterface:
         print(f"{Fore.CYAN}{Style.BRIGHT} Name of city set to {city.capitalize()}")
 
     def set_forecast_mode(self):
-        print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter forecast mode: [AVG | HLY]?")
+        print(
+            Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter forecast mode: [AVG | HLY]?"
+        )
         fm = input()
         if fm.lower() == "avg":
             self.FORECAST_MODE = "average"
         elif fm.lower() == "hly":
             self.FORECAST_MODE = "hourly"
         else:
-            print(Fore.RED + Back.WHITE +"The only options are : AVG and HLY !")
+            print(Fore.RED + Back.WHITE + "The only options are : AVG and HLY !")
         print(f"{Fore.CYAN}{Style.BRIGHT}Current forecast mode: {self.FORECAST_MODE}")
 
     def update_settings(self):
@@ -337,7 +397,12 @@ class UserInterface:
         command_colors = f"{Fore.GREEN}{Style.BRIGHT}{Back.BLACK}"
         # swtich_board.append([])
         # swtich_board[0] = ["desc_fmRIPTION", "COMMAND"]
-        swtich_board.append([f"{headers_colors}DESCRIPTION{cell_colors}", f"{headers_colors}COMMAND{cell_colors}"])
+        swtich_board.append(
+            [
+                f"{headers_colors}DESCRIPTION{cell_colors}",
+                f"{headers_colors}COMMAND{cell_colors}",
+            ]
+        )
         # description string of the forecast command
         desc_forecast = """Show the forcast for the number of days,
         defined in the settings.Default is 3 days,
@@ -345,9 +410,18 @@ class UserInterface:
         # remove indentations from the multiline string
         dedent_forecast = "\n".join([m.lstrip() for m in desc_forecast.split("\n")])
         swtich_board.append([dedent_forecast, f"{command_colors}forecast{cell_colors}"])
-        swtich_board.append(["Show the forcast for today", f"{command_colors}today{cell_colors}"])
-        swtich_board.append(["Current weather", f"{command_colors}current{cell_colors}"])
-        swtich_board.append(["Set the temperature unit[Celcius/Fahrenheit]", f"{command_colors}set tu{cell_colors}"])
+        swtich_board.append(
+            ["Show the forcast for today", f"{command_colors}today{cell_colors}"]
+        )
+        swtich_board.append(
+            ["Current weather", f"{command_colors}current{cell_colors}"]
+        )
+        swtich_board.append(
+            [
+                "Set the temperature unit[Celcius/Fahrenheit]",
+                f"{command_colors}set tu{cell_colors}",
+            ]
+        )
         # description of the set temerature unit command
         desc_tu = """Set the span of a forecast.
         How many days to cover?

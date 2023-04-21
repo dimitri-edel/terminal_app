@@ -48,9 +48,11 @@ class RequestInfo:
         # day = 0
         # If the response returns an error, then raise an exception
         if "error" in json_obj:
+            txt_query = self.QUERY.split("=")
+            city_name = txt_query[1]
             additional_text = f"""\nYou might have misspelled the name of the city, 
             or the city is not covered! 
-            Requested city name was {self.QUERY}"""
+            Requested city name was {city_name}"""
 
             dedent_text = "\n".join([m.lstrip() for m in additional_text.split("\n")])
             raise Exception(json_obj["error"]["message"] + dedent_text)
