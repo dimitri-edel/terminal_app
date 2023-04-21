@@ -30,8 +30,7 @@ The Project has been deployed on Heroku, which is a public website and can be us
 The project does not use a session or a database to store user data. If several users try to change the generated settings file at the same time, it will result in data inconsistency. The script is not intended for this purpose. It is intended to be copied to a particular machine and run locally.
 Heroku merely serves as a platform for presentation purposes. However, I will implement session management in the project later on and store the settings in the session instead of storing them in a file.
 # User stories
-## Before you get started
-### Switching between names of location
+## Switching between names of location
 First you need to set the name of the location / city. For this, you need to enter the command **city** 
 ![Enter city command image](documentation/img/enter-city.webp)
 
