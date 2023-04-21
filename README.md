@@ -164,7 +164,7 @@ If someone wants to use it on their local machine, they would have to copy the f
 ### Special request
 If you intend to use it on your computer, then **PLEASE**  get an **API KEY** for yourself! It is **easy** to do. You only need to sign up at [Weather-API website](https://www.weatherapi.com/). All you need to provide is a valid **email-address** and **it does not cost a thing**. Then just copy the **API-key** into to the constructor of the class named **RequestInfo** in **api.py**. The name of the property in the constructor is **API_KEY**.
 ## Heroku
-Before deploying the webapplication to Heroku, it is mandatory to compile a list of imports in the requirements.txt. Which the Heroku deployment script will use for setting up the environment. To do so, I just typed a pip command in the terminal <code>pip3 freeze > requirements.txt</doce>
+Before deploying the webapplication to Heroku, it is mandatory to compile a list of imports in the requirements.txt. Which the Heroku deployment script will use for setting up the environment. To do so, I just typed a pip command in the terminal <code>pip3 freeze > requirements.txt</code>
 Next step is creating an account on Heroku. 
 Once registered with Heroku, I went to the dashboard and created a new App.
 Then I opened the App and went to the settings panel. Here it is necessary to set up a couple of configuration variables. One of them is PORT number must be set to 8000. 
