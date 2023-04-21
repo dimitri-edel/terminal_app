@@ -64,7 +64,7 @@ Upon entering the forecast mode you will see a message that lets you know which 
 ![Set forecast mode message image](documentation/img/set-fm-msg.webp)
 
 ## Setting number of days in forecast
-Enter **set fs**. FS stands for forecast span. **Maximum** nomber of days is **3**.
+Enter **set fs**. FS stands for forecast span. **Maximum** number of days is **3**.
 ![Set forecast span image](documentation/img/set-fs.webp)
 
 Enter a number between 1 and 3.
@@ -82,7 +82,19 @@ In the top row of the terminal yoou will see the current weather report.
 ![Current weather report image](documentation/img/current-report.webp)
 
 ## Getting the current day's weather forecast
+Enter **today**
+![Today command image](documentation/img/today.webp)
+
+Now you can see a table with the forecast for the rest of the day.
+![Today report image](documentation/img/today-report.webp)
+
 ## Getting several days of the weather forecast
+Enter **forecast**
+![Forcast command image](documentation/img/forecast.webp)
+
+Now you can see a table with the forecast for the number of days that you have set using **set fs** command. The image below only illustrates a section of the actual table. The table you will see will cover 24 hours for each day.
+![Forecast report image](documentation/img/forecast-report.webp)
+
 ## Entering invalid data
 
 # Code
