@@ -157,7 +157,7 @@ The issue stemmed from a loop inside RequestInfo.__extract_forecast(). Solution,
 - Python
 # Deployment
 ## Local machine
-If someone wants to use it on their local machine, they would have to copy the folders **conf** and **src** and the files **run.py** and **requirements.txt**  to a folder of their choice. Then open that folder in a terminal (Command prompt on Windows) and type the following command <code>pip install -r requirements.txt</code>. The file **requirements.txt** contains a list of packages required to run the script. Lastly, execute **run.py** on their machine. 
+If someone wants to use it on their local machine, they would have to copy the folders **conf** and **src** and the files **run.py** and **requirements.txt**  to a folder of their choice. Then open that folder in a terminal (Command prompt on Windows) and type the following command <code>pip install -r requirements.txt</code>. The command will ensure that all the packages required by this script are installed. Lastly, execute **run.py**. 
 ### Special request
 If you intend to use it on your computer, then **PLEASE**  get an **API KEY** for yourself! It is **easy** to do. You only need to sign up at [Weather-API website](https://www.weatherapi.com/). All you need to provide is a valid **email-address** and **it does not cost a thing**. Then just copy the **API-key** into to the constructor of the class named **RequestInfo** in **api.py**. The name of the property in the constructor is **API_KEY**.
 ## Heroku
