@@ -31,6 +31,25 @@ The project does not use a session or a database to store user data. If several 
 Heroku merely serves as a platform for presentation purposes. However, I will implement session management in the project later on and store the settings in the session instead of storing them in a file.
 # User stories
 ## Information on the current weather at a certain location
+### Enter city name
+First you need to set the name of the location / city. For this, you need to enter the command **city** 
+![Enter city command image](documentation/img/enter-city.webp)
+
+**Now enter** the name of the **city**. In the image below I am entering **London** for the name.
+![Enter city name image](documentation/img/enter-city-name.webp)
+
+Now you can see that the name of the city has been changed.
+![Enter city name response image](documentation/img/enter-city-response.webp)
+
+### Enter command **current**
+Now enter the next command, **current** for current weather.
+![Enter command current image](documentation/img/enter-current.webp)
+
+In the top row of the terminal yoou will see the current weather report.
+![Current weather report image](documentation/img/current-report.webp)
+
+
+
 ## Getting the current day's weather forecast for a certain locatioon
 ## Getting several days of the weather forecast for a certain locatioon
 ## Switching between temperature units
@@ -57,7 +76,7 @@ TextTable. Found this on stackoverflow.com <code> print('\n'.join([m.lstrip() fo
 I adjusted that to my code and it worked, the multi-line text appears without indentions.
 
 ### An empty dataset appears in the forecast table 
-The issue stemmed from a loop inside RequestInfo.__extract_forecast(). 
+The issue stemmed from a loop inside RequestInfo.__extract_forecast(). Solution, check if the execution araived at the end of the forcast and not execute response.nextDay(). You will find the fix **@ line: 127 of api.py**
 # Technologies
 - GitHub
 - VS Code
@@ -67,7 +86,7 @@ The issue stemmed from a loop inside RequestInfo.__extract_forecast().
 ## Local machine
 If someone wants to use it on their local machine, they would have to copy the folders **conf** and **src** and the file **run.py** to a folder of their choice and then execute **run.py** on their machine. 
 ### Special request
-If you intend to use it on your computer, then **PLEASE**  get an **API KEY** for yourself! It is **easy** to do. You only need to sign up at [Weather-API website](https://www.weatherapi.com/). All you need to provide is a valid **email-address** and **it does not cost a thing**. Then just copy the **API-key** into to the constructor of the class named RequestInfo in api.py. The name of the property in the constructor is **API_KEY**.
+If you intend to use it on your computer, then **PLEASE**  get an **API KEY** for yourself! It is **easy** to do. You only need to sign up at [Weather-API website](https://www.weatherapi.com/). All you need to provide is a valid **email-address** and **it does not cost a thing**. Then just copy the **API-key** into to the constructor of the class named **RequestInfo** in **api.py**. The name of the property in the constructor is **API_KEY**.
 ## Heroku
 
 # Credits
