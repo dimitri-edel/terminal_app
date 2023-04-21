@@ -70,7 +70,7 @@ Enter a number between 1 and 3.
 ![Enter forecast span image](documentation/img/enter-fs.webp)
 
 Now you will see a message informing you about the change.
-![Set forecast span message image](documentation/img/set-fm-msg.webp)
+![Set forecast span message image](documentation/img/set-fs-msg.webp)
 
 ## Information on the current weather
 Enter **current** for current weather.
