@@ -30,31 +30,59 @@ The Project has been deployed on Heroku, which is a public website and can be us
 The project does not use a session or a database to store user data. If several users try to change the generated settings file at the same time, it will result in data inconsistency. The script is not intended for this purpose. It is intended to be copied to a particular machine and run locally.
 Heroku merely serves as a platform for presentation purposes. However, I will implement session management in the project later on and store the settings in the session instead of storing them in a file.
 # User stories
-## Information on the current weather at a certain location
-### Enter city name
+## Before you get started
+### Switching between names of location
 First you need to set the name of the location / city. For this, you need to enter the command **city** 
 ![Enter city command image](documentation/img/enter-city.webp)
 
 **Now enter** the name of the **city**. In the image below I am entering **London** for the name.
 ![Enter city name image](documentation/img/enter-city-name.webp)
 
-Now you can see that the name of the city has been changed.
+Now you can see that the name of the city has been changed. **NOTE!** Once the name of city has been changed it will be added to the settings and all the other commands will use this location in the forecast querries.
 ![Enter city name response image](documentation/img/enter-city-response.webp)
 
-### Enter command **current**
-Now enter the next command, **current** for current weather.
+## Switching between temperature units
+The default setting is Fahrenheit. So, unless someone has already changed the setting to Celcius, you might have to change the setting to Celcius.
+To set the temperature unit enter **set tu**.
+![Set temeperature unit image](documentation/img/set-tu.webp)
+
+Now enter **c** for Celcius or **f** for Fahrenheit.
+![Enter temperature unit image](documentation/img/enter-tu.webp)
+
+Now you will see a message that lets you know what temperature unit you have just set.
+![Set temperature unit message image](documentation/img/set-tu-report.webp)
+
+## Swtiching between forecast modes
+The script provides two forecast modes. One is the hourly forecast, which will give you estimated temperatures and condition for each hour of a day. The other one is average forecast mode, which will provide what temperatures and conditons you may expect on average for each day.
+To switch between the two modes enter **set fm**.
+![Set forecast mode image](documentation/img/set-fm.webp)
+
+Enter **avg** for average or **hly* for hourly.
+![Enter forecast mode image](documentation/img/enter-fm.webp)
+
+Upon entering the forecast mode you will see a message that lets you know which forecast mode has been set.
+![Set forecast mode message image](documentation/img/set-fm-msg.webp)
+
+## Setting number of days in forecast
+Enter **set fs**. FS stands for forecast span. **Maximum** nomber of days is **3**.
+![Set forecast span image](documentation/img/set-fs.webp)
+
+Enter a number between 1 and 3.
+![Enter forecast span image](documentation/img/enter-fs.webp)
+
+Now you will see a message informing you about the change.
+![Set forecast span message image](documentation/img/set-fm-msg.webp)
+
+
+## Information on the current weather
+Enter **current** for current weather.
 ![Enter command current image](documentation/img/enter-current.webp)
 
 In the top row of the terminal yoou will see the current weather report.
 ![Current weather report image](documentation/img/current-report.webp)
 
-
-
-## Getting the current day's weather forecast for a certain locatioon
-## Getting several days of the weather forecast for a certain locatioon
-## Switching between temperature units
-## Switching between names of location
-## Swtiching between forecast modes
+## Getting the current day's weather forecast
+## Getting several days of the weather forecast
 ## Entering invalid data
 
 # Code

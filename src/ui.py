@@ -286,6 +286,9 @@ class UserInterface:
             if int(days) > 3:
                 setting = 3
                 print(Fore.RED + Back.WHITE +"Maximum span is 3 days, current setting is now 3 days!")
+            elif int(day) < 1:
+                setting = 1
+                print(Fore.RED + Back.WHITE +"Minimum is 1 day, current setting is now 1 day!")
             else:
                 setting = int(days)
             self.FORECAST_SPAN = setting
