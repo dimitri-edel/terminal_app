@@ -93,8 +93,8 @@ class TextTable:
                 for hourly in response_info.response_table[response_table_index][
                     "hourly"
                 ]:
-                    # Make the column narrower by replacing spaces with new lines
-                    txt_hourly = hourly.replace(" ", "\n")
+                    # Make the column narrower by replacing the first white space with a new line
+                    txt_hourly = hourly.replace(" ", "\n", 1)
                     self.table[self.current_row].append(txt_hourly)
                     # Go to the next entry
                     self.next_row()
@@ -102,10 +102,8 @@ class TextTable:
                 entry_text = f"""{response_info.response_table[response_table_index]['avg_temp']}
                 {response_info.response_table[response_table_index]['condition']}"""
                 # Remove indentations from the multi line string
-                dedent_text = "\n".join([m.lstrip() for m in entry_text.split("\n")])
-                # Replace white spaces with new lines to make the text narrower
-                rows_text = dedent_text.replace(" ", "\n")
-                self.table[self.current_row].append(rows_text)
+                dedent_text = "\n".join([m.lstrip() for m in entry_text.split("\n")])                
+                self.table[self.current_row].append(dedent_text)
                 # Go to the next entry
                 self.next_row()
 
@@ -285,9 +283,9 @@ class UserInterface:
         days = input()
         setting = 0
         if days.isnumeric():
-            if int(days) > 4:
-                setting = 4
-                print(Fore.RED + Back.WHITE +"Maximum span is 4 days, current setting is now 4 days!")
+            if int(days) > 3:
+                setting = 3
+                print(Fore.RED + Back.WHITE +"Maximum span is 3 days, current setting is now 3 days!")
             else:
                 setting = int(days)
             self.FORECAST_SPAN = setting
@@ -350,7 +348,7 @@ class UserInterface:
         # description of the set temerature unit command
         desc_tu = """Set the span of a forecast.
         How many days to cover?
-        Maximum is 4!"""
+        Maximum is 3!"""
         # remove indentations from the multiline string
         dedent_tu = "\n".join([m.lstrip() for m in desc_tu.split("\n")])
         swtich_board.append([dedent_tu, f"{command_colors}set fs{cell_colors}"])

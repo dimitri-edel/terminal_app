@@ -23,6 +23,8 @@ At first I adjusted the size of the terminal in the index.html that came with th
 larger tables, which could accomodate forecasts for up to seven days, without making it look messy. Neither me, nor my mentor were sure 
 about how the assemsment team would feel about me changing the files, which Code Institute warned us agains changing. So, toward the end
 I changed it back to the intial width of 80 columns. It's like they say: 'Customer is King!'
+## API trial ended
+That resolves the question about the size of the terminal. Because, today on 21st of April 2023, I received an email informing me that the trial period had ended. As a consequence, my account had been added to the free plan, which only provides three days of forecast.
 # User stories
 
 # Code
@@ -43,7 +45,7 @@ The template for the Heroku website and a step by step tutorial on how to deploy
 ## stackoverflow.com
 Provided solutions for a few problems, which I would not have been able to come up with on my own.
 ## w3schools.com
-I oftentimes used this website, when I needed to quickly look how to use certain classes and functions in Python. It posed a great helper in additon to the tutorials by Code Institute.
+I oftentimes used this website, when I needed to quickly look up how to use certain classes and functions in Python. It posed a great helper in additon to the tutorials by Code Institute.
 ## My mentor Adegbenga Adeye
 Special thanks to my mentor for the help and support throughout the project!
 
