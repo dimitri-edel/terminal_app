@@ -31,7 +31,7 @@ The project does not use a session or a database to store user data. If several 
 Heroku merely serves as a platform for presentation purposes. However, I will implement session management in the project later on and store the settings in the session instead of storing them in a file.
 # Linter
 The only thing that bothers me is the line length. The interpreters do not seem to have a problem with it. So I turned that option off on mine.
-Simply becasue 79 characters seems like a strong limitation. It would only make sense if I were coding on a smart phone, which I never would. The limitation impacts lengthy and descriptive names for methods and variables. Inside of nested loops it becomes a real problem. There is a solution to the problem, one can jsut add backslash at the end of the line and proceed carry in the next line, but it looks horrible. So please, be merciful becasue I used more than 79 columns per line in the script.
+Simply becasue 79 characters seems like a strong limitation. It would only make sense if I were coding on a smart phone, which I never would. The limitation impacts lengthy and descriptive names for methods and variables. Inside of nested loops it becomes a real problem. There is a solution to the problem, one can jsut add backslash at the end of the line and continue in the next line, but it looks horrible. So please, be merciful becasue I used more than 79 columns per line in the script.
 # User stories
 ## Switching between names of location
 First you need to set the name of the location / city. For this, you need to enter the command **city** 
