@@ -160,7 +160,7 @@ class UserInterface:
         self.NAME_OF_CITY = "Austin"
         self.FORECAST_MODE = "hourly"
 
-    def show_current_weather(self):
+    def __show_current_weather(self):
         # Show the current weather
         # Table that holds the data to be printed
         table = []
@@ -196,7 +196,7 @@ class UserInterface:
         # Add some extra space after the table to speparate it from next lines
         print("\n\n\n")
 
-    def print_todays_forecast(self):
+    def __print_todays_forecast(self):
         # Print the forecast for the current day
         # Pack the parameters for the RequestInfo Object
         parameters = RequestParameters(number_of_days=1, city=self.NAME_OF_CITY)
@@ -225,7 +225,7 @@ class UserInterface:
             t = TextTable(rows=rows)
             t.print_todays_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
 
-    def print_forecast(self, number_of_days):
+    def __print_forecast(self, number_of_days):
         # Prints the forecast
         tables = []
         table_index = 0
@@ -275,44 +275,44 @@ class UserInterface:
         # Main method serves as the starting point for the script
         # Initialize colorama and set it to autoreset upon every print statement
         colorama.init(autoreset=True)
-        self.get_settings()
+        self.__get_settings()
         # Clear the screen when starting up
-        self.clear_screen()
+        self.__clear_screen()
         # Keep the user in the loop until the exit command is issued
         while self.EXIT is False:
-            self.get_user_input()
+            self.__get_user_input()
 
-    def get_user_input(self):
+    def __get_user_input(self):
         # Prompt user to enter a command
         # And evaluate user's input and execute the command
-        self.print_switchboard()
+        self.__print_switchboard()
         print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter command:")
         _input = input()
         if _input.lower() == "exit":
             self.EXIT = True
         elif _input.lower() == "today":
-            self.clear_screen()
-            self.print_todays_forecast()
+            self.__clear_screen()
+            self.__print_todays_forecast()
         elif _input.lower() == "forecast":
-            self.clear_screen()
-            self.print_forecast(self.FORECAST_SPAN)
+            self.__clear_screen()
+            self.__print_forecast(self.FORECAST_SPAN)
         elif _input.lower() == "current":
-            self.clear_screen()
-            self.show_current_weather()
+            self.__clear_screen()
+            self.__show_current_weather()
         elif _input.lower() == "get settings":
-            self.clear_screen()
-            self.get_settings()
+            self.__clear_screen()
+            self.__get_settings()
         elif _input.lower() == "set tu":
-            self.clear_screen()
-            self.set_temperature_unit()
+            self.__clear_screen()
+            self.__set_temperature_unit()
         elif _input.lower() == "set fs":
-            self.clear_screen()
-            self.set_forecast_span()
+            self.__clear_screen()
+            self.__set_forecast_span()
         elif _input.lower() == "city":
-            self.clear_screen()
-            self.set_name_of_city()
+            self.__clear_screen()
+            self.__set_name_of_city()
         elif _input.lower() == "set fm":
-            self.clear_screen()
+            self.__clear_screen()
             self.set_forecast_mode()
         else:
             # Print an error message if the command has not been found 
@@ -321,7 +321,7 @@ class UserInterface:
     # Set the preferred temperature unit
     # User can choose between Fahrenheit and Celcius
 
-    def set_temperature_unit(self):
+    def __set_temperature_unit(self):
         # Prompt the user to enter the temperature unit
         print(
             Fore.GREEN
@@ -346,7 +346,7 @@ class UserInterface:
                 + "You can only put F for Fahrenheit or C for Celicius!"
             )
 
-    def set_forecast_span(self):
+    def __set_forecast_span(self):
         # Prompt the user to enter the span of forecast
         print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter number of days: ")
         days = input()        
@@ -372,20 +372,20 @@ class UserInterface:
             else:
                 setting = int(days)
             self.FORECAST_SPAN = setting
-            self.update_settings()
+            self.__update_settings()
             print(f"{Fore.CYAN}{Style.BRIGHT}Forecast span set to {setting} days!")
         else:
             # If the user entered something that is not a number then notify the user
             print(Fore.RED + Back.WHITE + "Number of days must be a number!")
 
-    def set_name_of_city(self):
+    def __set_name_of_city(self):
         # Prompt the user to enter the name of the sity
         print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter name of city:")
         city = input()
         # Save user's input within this object
         self.NAME_OF_CITY = city.capitalize()
         # Save user's input in the settings file
-        self.update_settings()
+        self.__update_settings()
         # Notify user about the change
         print(f"{Fore.CYAN}{Style.BRIGHT} Name of city set to {city.capitalize()}")
 
@@ -405,7 +405,7 @@ class UserInterface:
             print(Fore.RED + Back.WHITE + "The only options are : AVG and HLY !")
         print(f"{Fore.CYAN}{Style.BRIGHT}Current forecast mode: {self.FORECAST_MODE}")
 
-    def update_settings(self):
+    def __update_settings(self):
         # Update settings in the file
         conf().update_settings(
             temp_unit=self.TEMPERATURE_UNIT,
@@ -415,14 +415,14 @@ class UserInterface:
         print("Settings have been updated!")
 
     
-    def get_settings(self):
+    def __get_settings(self):
         # Read settings from the file
         data = conf().get_settings()
         self.TEMPERATURE_UNIT = data["temperature_unit"]
         self.FORECAST_SPAN = data["forecast_span"]
         self.NAME_OF_CITY = data["name_of_city"]
 
-    def print_switchboard(self):
+    def __print_switchboard(self):
         # Print the table with commands and their descritpions
         swtich_board = []
         headers_colors = f"{Back.BLACK}{Fore.YELLOW}{Style.BRIGHT}"
@@ -480,6 +480,6 @@ class UserInterface:
         swtich_board.append(["Exit", f"{command_colors}exit{cell_colors}"])        
         print(cell_colors + tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
 
-    def clear_screen(self):
+    def __clear_screen(self):
         # Clear the screen on the terminal
         os.system("cls" if os.name == "nt" else "clear")
