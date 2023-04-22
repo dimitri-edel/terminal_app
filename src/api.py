@@ -1,24 +1,18 @@
 from datetime import date
-import requests  # needs pip install requests
-
-""" RequestParmaters - An instance of this class is used for passing
-    parameters to RequestInfo constructor
-"""
+import requests  
 
 
 class RequestParameters:
+    # RequestParmaters - An instance of this class is used for passing
+    # parameters to RequestInfo constructor
     def __init__(self, number_of_days, city) -> None:
         self.number_of_days = number_of_days
         self.city = city
 
 
-"""
-    RequestInfo
-    DESCRIPTIOIN: Helps creating and sending HTTP-Requests to the API 
-"""
-
-
 class RequestInfo:
+    # This class helps creating and sending HTTP-Requests to the API 
+
     def __init__(self, parameters) -> None:
         if not isinstance(parameters, RequestParameters):
             return None
@@ -27,25 +21,22 @@ class RequestInfo:
         self.FORECAST_SPAN = "&days=" + str(parameters.number_of_days)
         self.BASE_URL = "http://api.weatherapi.com/v1/forecast.json"
         self.CURL = self.BASE_URL + self.API_KEY + self.QUERY + self.FORECAST_SPAN
-        # x = requests.get('https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m')
-
-    """ Get Response from API and assemble a ResponseInfo object and return it
-    PARAMETER: temperature_unit
-    VALUES : 'f' for Fahrehneit or 'c' for Celcius
-    Deliver Fahrenheit or Celcius Readings
-    PARAMETER: forecast_mode
-    VALUES: 'hourly' will deliver a table with anticipated temperatures for each hour of the day
-            'average' will only diliver the anticipated average temperatures, humidity, etc., for each day
-    RETURN: Object of type ResponseInfo, which contains a map, that is retrieved from
-    a JSON-file. The map contains all the weather-data received from the API
-    """
-
+    
     def get_response(self, temperature_unit, forecast_mode, forecast_span):
+        # Get Response from API and assemble a ResponseInfo object and return it
+        # PARAMETER: temperature_unit
+        # VALUES : 'f' for Fahrehneit or 'c' for Celcius
+        # Deliver Fahrenheit or Celcius Readings
+        # PARAMETER: forecast_mode
+        # VALUES: 'hourly' will deliver a table with anticipated temperatures for each hour of the day
+        # 'average' will only diliver the anticipated average temperatures, humidity, etc., for each day
+        # RETURN: Object of type ResponseInfo, which contains a map, that is retrieved from
+        # a JSON-file. The map contains all the weather-data received from the API
         response = ResponseInfo()
+        # send a HTTP-request and store its response in x
         x = requests.get(self.CURL)
+        # Convert the JSON object in the HTTP-Response into a Python dictionary named json_obj
         json_obj = x.json()
-        # Day index in the response.response_table list
-        # day = 0
         # If the response returns an error, then raise an exception
         if "error" in json_obj:
             txt_query = self.QUERY.split("=")
@@ -56,18 +47,15 @@ class RequestInfo:
 
             dedent_text = "\n".join([m.lstrip() for m in additional_text.split("\n")])
             raise Exception(json_obj["error"]["message"] + dedent_text)
-
-        # Extract information from the dictionary named 'current' and put it in response objec
+        # Put the current weather data in response object
         self.__extract_current_weather(json_obj, response, temperature_unit)
-        # Find dictionary named 'forecastday', and copy relevant data to response.response_table
-        # The 'forecastday' dictionary is nested inside the second level of a multidimensional dictionary
-        # First level contains three objects in total: 'location', 'current', 'forecast'
-
+        # Put forecast data in reponse object
         self.__extract_forecast(json_obj, response, forecast_mode, temperature_unit, forecast_span)
 
         return response
 
     def __extract_current_weather(self, json_obj, response, temperature_unit):
+        # Extract information from the dictionary named 'current' and put it in response objec
         # The index of the first list in response.response_table. It always contains
         # information on the current day
         current_day_index = 0
@@ -84,7 +72,10 @@ class RequestInfo:
         response.response_table[current_day_index]["condition"] = json_obj["current"]["condition"]["text"]
 
     def __extract_forecast(self, json_obj, response, forecast_mode, temperature_unit, forecast_span):
-        # Day index is used for
+        # Find dictionary named 'forecastday', and copy relevant data to response.response_table
+        # The 'forecastday' dictionary is nested inside the second level of a multidimensional dictionary
+        # First level contains three objects in total: 'location', 'current', 'forecast'
+        # Day index is used for storeing data inside response object
         day_index = 0
         for day_info in json_obj["forecast"]["forecastday"]:
             # The date for the first day has already been added by __extract_current_weather(),
@@ -154,16 +145,11 @@ class RequestInfo:
                     f"{hourly['temp_c']}°{temperature_unit.upper()} {hourly['condition']['text']}"
                 )
 
-    def __extract_date(self, timestamp):
-        """Extracts the date from a timestamp
-
-
-        Args:
-            timestamp (string):The string is formatted like so: "2024/04/01 14:00:00:00"
-
-        Returns:
-            string: The date extracted from the timestamp, which will look like this: "Mon.1.Apr"
-        """
+    def __extract_date(self, timestamp):       
+        # Extracts the date from a timestamp
+        # PARAMETER: timestamp (string):The string is formatted like so: "2024/04/01 14:00:00:00"
+        # RETURN: string: The date extracted from the timestamp, which will look like this: "Mon.1.Apr"
+     
         data = timestamp.split(" ")
         data_split = data[0].split("-")
         data_year = int(data_split[0])
@@ -173,16 +159,22 @@ class RequestInfo:
         date_as_str = ""
         data_weekday = self.__get_name_of_weekday(date_obj)
         date_as_str = (
-            data_weekday + " " + str(data_day) + "." + self.__get_name_of_month(data_month - 1)
+            data_weekday + " " + str(data_day) + "." + self.__get_name_of_month(data_month)
         )
 
         return date_as_str
 
     def __get_name_of_weekday(self, date):
+        # Take a date object and return the corresponding name of weekday
+        # PARAMETER: date is of TYPE date from datetime
         weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         return weekdays[date.weekday()]
 
     def __get_name_of_month(self, month_as_int):
+        # Returns a string representation of a month
+        # PARAMETER: month_as_int is a integer value of a month (1-12)
+        # Adjust the value of month to fit the index in the array
+        month_as_int -= 1
         months = [
             "Jan",
             "Feb",
@@ -201,6 +193,9 @@ class RequestInfo:
 
 
 class ResponseInfo:
+    # ResponseInfo serves as a container for storing data that has been
+    # retrieved from the JSON file by RequestInfo.get_response()
+    
     def __init__(self) -> None:
         current_day = {
             "current_temperature": "",
@@ -210,9 +205,13 @@ class ResponseInfo:
             "date": "",
             "hourly": [],
         }
+        # response_table is used for storing data in a list
+        # Each entry in the list represents information on a certain day
+        # Each entry in the list is a dictionary
         self.response_table = []
         self.response_table.append(current_day)
 
     def next_day(self):
+        # append en empty dictionary for the next day
         next_row = {"date": "", "avg_temp": "", "condition": "", "hourly": []}
         self.response_table.append(next_row)

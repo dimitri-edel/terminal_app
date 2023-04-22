@@ -29,10 +29,14 @@ class TextTable:
         self.current_row = 0
 
     def print_forecast(self, response_info, forecast_mode):
+        # Print the forecast stored in response_info
+        # If the forecast mode is set to 'hourly', then add the first 
+        # column with the heading TIME and up to 24 rows like 'hh:00'
         if forecast_mode == "hourly":
             self.__add_hours_columns()
+        # Copy the data from response_info
         self.__add_forecast_columns(response_info, forecast_mode)
-        # Print the table in green on a white background
+        # Print the table in green
         print(
             Fore.GREEN
             + Style.BRIGHT
@@ -42,6 +46,7 @@ class TextTable:
         print("\n\n\n")
 
     def print_todays_forecast(self, response_info, forecast_mode):
+        # Copy the data in response_info and print it inside a table
         # If forecast mode is set to average then show date, average temperature and condition
         if forecast_mode == "average":
             self.reset_row()
@@ -59,12 +64,13 @@ class TextTable:
                 + tabulate(self.table, headers="firstrow", tablefmt="fancy_grid")
             )
             return
-
+        # If the forecast mode is set to 'hourly', then the table will only copy the
+        # entries starting at the current hour and ignore the ones that preceed them
         # start with the current hour
         start_index = (
             datetime.datetime.now().hour - 1 if datetime.datetime.now().hour > 0 else 0
         )
-        # This is the index of the row within the table
+        # Reset the index of the row within the table
         self.reset_row()
         for i in range(start_index, 24, 1):
             if i == start_index:
@@ -108,6 +114,9 @@ class TextTable:
                 self.table[row].append(str(row) + ":00")
 
     def __add_forecast_columns(self, response_info, forecast_mode):
+    # The method copies the data from response_info.response_table to self.table
+    # The self.table property contains the data for the tabulate() function from
+    # tabulate library. 
         for response_table_index in range(len(response_info.response_table)):
             # Reset the current_row within the table
             self.reset_row()
@@ -136,6 +145,12 @@ class TextTable:
 
 
 class UserInterface:
+    # UserInterface handles input and output on the terminal.
+    # It prints tables and messages for the user and gets the commands 
+    # issued by the user and evaluates them, then triggers the according
+    # response. 
+    # Moreover, it harbors the main() method that serves as the starting
+    # point for the script.
     def __init__(self) -> None:
         self.EXIT = False
         # Number of days to be convered in the forecast
@@ -145,9 +160,8 @@ class UserInterface:
         self.NAME_OF_CITY = "Austin"
         self.FORECAST_MODE = "hourly"
 
-    # Show the current weather
-
     def show_current_weather(self):
+        # Show the current weather
         # Table that holds the data to be printed
         table = []
         # Parameters for the RequestInfo constructor
@@ -162,6 +176,7 @@ class UserInterface:
                 forecast_mode=self.FORECAST_MODE,
                 forecast_span=self.FORECAST_SPAN,
             )
+        # If an error occurs during the transmittion print the error message on the terminal
         except Exception as e:
             print(f"{Fore.RED}{Back.WHITE}{e}")
             return
@@ -181,18 +196,20 @@ class UserInterface:
         # Add some extra space after the table to speparate it from next lines
         print("\n\n\n")
 
-    """Print the forecast for the current day """
-
     def print_todays_forecast(self):
+        # Print the forecast for the current day
+        # Pack the parameters for the RequestInfo Object
         parameters = RequestParameters(number_of_days=1, city=self.NAME_OF_CITY)
+        # Instanciate a RequestInfo object
         info = RequestInfo(parameters=parameters)
-
+        # Try and send a HTTP-Request to the server and save its response in a ResponseInfo object named res
         try:
             res = info.get_response(
                 self.TEMPERATURE_UNIT,
                 forecast_mode=self.FORECAST_MODE,
                 forecast_span=self.FORECAST_SPAN,
             )
+        # If an error occurs during the transmittion print the error message on the terminal
         except Exception as e:
             print(e)
             return
@@ -209,19 +226,23 @@ class UserInterface:
             t.print_todays_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
 
     def print_forecast(self, number_of_days):
+        # Prints the forecast
         tables = []
         table_index = 0
+        # Assemble the parameter for RequestInfo
         parameters = RequestParameters(
             number_of_days=self.FORECAST_SPAN, city=self.NAME_OF_CITY
-        )
+        )        
         info = RequestInfo(parameters=parameters)
-
+        # Try and send an HTTP-Request to the API server and if the request is successful
+        # store data inside the 'res'-object of TYPE ResponseInfo
         try:
             res = info.get_response(
                 self.TEMPERATURE_UNIT,
                 forecast_mode=self.FORECAST_MODE,
                 forecast_span=self.FORECAST_SPAN,
             )
+        # If the Request did not succeed notify the user by printing the error message on terminal
         except Exception as e:
             print(Fore.RED + Back.WHITE + str(e))
             return
@@ -249,20 +270,21 @@ class UserInterface:
         else:
             t = TextTable(25)
         t.print_forecast(response_info=res, forecast_mode=self.FORECAST_MODE)
-
-    # Starting point
+    
     def main(self):
+        # Main method serves as the starting point for the script
         # Initialize colorama and set it to autoreset upon every print statement
         colorama.init(autoreset=True)
         self.get_settings()
         # Clear the screen when starting up
         self.clear_screen()
+        # Keep the user in the loop until the exit command is issued
         while self.EXIT is False:
             self.get_user_input()
 
-    # Process user's input
-
     def get_user_input(self):
+        # Prompt user to enter a command
+        # And evaluate user's input and execute the command
         self.print_switchboard()
         print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter command:")
         _input = input()
@@ -293,12 +315,14 @@ class UserInterface:
             self.clear_screen()
             self.set_forecast_mode()
         else:
+            # Print an error message if the command has not been found 
             print(Fore.RED + Back.WHITE + f"The command '{_input}' is not defined!")
 
     # Set the preferred temperature unit
     # User can choose between Fahrenheit and Celcius
 
     def set_temperature_unit(self):
+        # Prompt the user to enter the temperature unit
         print(
             Fore.GREEN
             + Style.BRIGHT
@@ -306,6 +330,9 @@ class UserInterface:
             + "Enter temperature unit [ F / C ] :"
         )
         unit = input()
+        # If the input was a valid temperature unit then set the change in this object
+        # and notify the user about the change
+        # If the input was not a valid temperature unit notify the user about the failure
         if unit.lower() == "f" or unit.lower() == "c":
             self.TEMPERATURE_UNIT = unit
             if unit.lower() == "c":
@@ -320,9 +347,13 @@ class UserInterface:
             )
 
     def set_forecast_span(self):
+        # Prompt the user to enter the span of forecast
         print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter number of days: ")
-        days = input()
+        days = input()        
         setting = 0
+        # If user's input is a number and the number is within the allowed range
+        # Then update the settings. If the number is outside of the range notify
+        # user about it and fall back to a maximum or minimum
         if days.isnumeric():
             if int(days) > 3:
                 setting = 3
@@ -344,20 +375,28 @@ class UserInterface:
             self.update_settings()
             print(f"{Fore.CYAN}{Style.BRIGHT}Forecast span set to {setting} days!")
         else:
+            # If the user entered something that is not a number then notify the user
             print(Fore.RED + Back.WHITE + "Number of days must be a number!")
 
     def set_name_of_city(self):
+        # Prompt the user to enter the name of the sity
         print(Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter name of city:")
         city = input()
+        # Save user's input within this object
         self.NAME_OF_CITY = city.capitalize()
+        # Save user's input in the settings file
         self.update_settings()
+        # Notify user about the change
         print(f"{Fore.CYAN}{Style.BRIGHT} Name of city set to {city.capitalize()}")
 
     def set_forecast_mode(self):
+        # Prompt the user to enter the abriviation for the forecast mode they wish to use
         print(
             Fore.GREEN + Style.BRIGHT + Back.BLACK + "Enter forecast mode: [AVG | HLY]?"
         )
         fm = input()
+        # If user entered a valid forecast mode, notifiy user about the change
+        # If user entered an invalid name, then notifiy user about the mistake
         if fm.lower() == "avg":
             self.FORECAST_MODE = "average"
         elif fm.lower() == "hly":
@@ -367,6 +406,7 @@ class UserInterface:
         print(f"{Fore.CYAN}{Style.BRIGHT}Current forecast mode: {self.FORECAST_MODE}")
 
     def update_settings(self):
+        # Update settings in the file
         conf().update_settings(
             temp_unit=self.TEMPERATURE_UNIT,
             forecast_span=self.FORECAST_SPAN,
@@ -374,20 +414,20 @@ class UserInterface:
         )
         print("Settings have been updated!")
 
-    # Read settings from the file
+    
     def get_settings(self):
+        # Read settings from the file
         data = conf().get_settings()
         self.TEMPERATURE_UNIT = data["temperature_unit"]
         self.FORECAST_SPAN = data["forecast_span"]
         self.NAME_OF_CITY = data["name_of_city"]
 
     def print_switchboard(self):
+        # Print the table with commands and their descritpions
         swtich_board = []
         headers_colors = f"{Back.BLACK}{Fore.YELLOW}{Style.BRIGHT}"
         cell_colors = f"{Back.BLUE}{Fore.WHITE}{Style.BRIGHT}"
-        command_colors = f"{Fore.GREEN}{Style.BRIGHT}{Back.BLACK}"
-        # swtich_board.append([])
-        # swtich_board[0] = ["desc_fmRIPTION", "COMMAND"]
+        command_colors = f"{Fore.GREEN}{Style.BRIGHT}{Back.BLACK}"        
         swtich_board.append(
             [
                 f"{headers_colors}DESCRIPTION{cell_colors}",
@@ -437,9 +477,9 @@ class UserInterface:
         # remove indentations from the multiline string
         dedent_city = "\n".join([m.lstrip() for m in desc_city.split("\n")])
         swtich_board.append([dedent_city, f"{command_colors}city{cell_colors}"])
-        swtich_board.append(["Exit", f"{command_colors}exit{cell_colors}"])
-        # print(Back.BLUE + Fore.WHITE + Style.BRIGHT + tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
+        swtich_board.append(["Exit", f"{command_colors}exit{cell_colors}"])        
         print(cell_colors + tabulate(swtich_board, headers="firstrow", tablefmt="grid"))
 
     def clear_screen(self):
+        # Clear the screen on the terminal
         os.system("cls" if os.name == "nt" else "clear")
